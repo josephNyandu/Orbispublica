@@ -10,9 +10,9 @@ export function Services() {
 
   return (
     <div className="pt-20">
-      <SEO 
-        title="Expertises" 
-        description="Découvrez les domaines d'intervention d'ORBIS PUBLICA : PPP, marchés publics, projets de développement et conformité réglementaire." 
+      <SEO
+        title="Services"
+        description="Découvrez l’offre de services d’ORBIS PUBLICA : PPP, marchés publics, projets de développement et conformité réglementaire."
       />
       <PageHeroBanner>
         <div className="container mx-auto px-6 md:px-10">
@@ -38,7 +38,7 @@ export function Services() {
                 <div className="p-6 md:p-8 flex flex-col h-full">
                   <h3 className="text-xl font-bold text-slate-900 mb-4">
                     <Link
-                      to={`/expertises/${service.slug}`}
+                      to={`/services/${service.slug}`}
                       className="hover:text-blue-600 transition-colors"
                     >
                       {service.title}
@@ -50,7 +50,7 @@ export function Services() {
 
                   <div className="border-t border-slate-100 pt-4 mt-auto">
                     <Link
-                      to={`/expertises/${service.slug}`}
+                      to={`/services/${service.slug}`}
                       className="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700 uppercase tracking-wider"
                     >
                       Fiche détaillée

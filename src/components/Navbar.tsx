@@ -41,18 +41,18 @@ export function Navbar() {
 
   const isCabinetNavActive = (pathname: string, itemPath: string) => {
     if (itemPath === '/expertises') {
-      return pathname === '/expertises' || pathname.startsWith('/expertises/');
+      return pathname === '/expertises';
     }
     return pathname === itemPath;
   };
 
   const isCabinetSectionActive =
-    location.pathname.startsWith('/notre-cabinet') || location.pathname.startsWith('/nos-realisations');
+    location.pathname === '/expertises' ||
+    location.pathname.startsWith('/notre-cabinet') ||
+    location.pathname.startsWith('/nos-realisations');
 
   const isServicesActive =
-    location.pathname === '/services' ||
-    location.pathname === '/expertises' ||
-    location.pathname.startsWith('/expertises/');
+    location.pathname === '/services' || location.pathname.startsWith('/services/');
 
   const isOpportunitesActive = opportunitesSubLinks.some((s) => s.path === location.pathname);
   const isPublicationsActive = location.pathname.startsWith('/publications');
@@ -182,7 +182,7 @@ export function Navbar() {
               <span className="hidden xl:inline h-4 w-px shrink-0 bg-slate-400/70" aria-hidden />
 
               <Link
-                to="/expertises"
+                to="/services"
                 className={`${desktopNavLinkBase} inline-block ${
                   isServicesActive ? 'text-blue-600' : 'text-slate-700'
                 }`}
@@ -365,7 +365,7 @@ export function Navbar() {
               </div>
 
               <Link
-                to="/expertises"
+                to="/services"
                 onClick={() => setIsOpen(false)}
                 className={`block border-b border-slate-300/80 py-2 text-base font-medium ${
                   isServicesActive ? 'text-blue-600' : 'text-slate-700'

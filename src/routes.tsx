@@ -7,6 +7,7 @@ import { CabinetQuiSommesNous } from "./pages/cabinet/CabinetQuiSommesNous";
 import { CabinetVisionMission } from "./pages/cabinet/CabinetVisionMission";
 import { CabinetPartenaires } from "./pages/cabinet/CabinetPartenaires";
 import { Services } from "./pages/Services";
+import { Expertises } from "./pages/Expertises";
 import { ServiceDetail } from "./pages/ServiceDetail";
 import { Portfolio } from "./pages/Portfolio";
 import { Partners } from "./pages/Partners";
@@ -25,7 +26,7 @@ import { SearchResults } from "./pages/SearchResults";
 import { Login } from "./pages/Login";
 import { Registre } from "./pages/Registre";
 import { Navigate } from "react-router";
-import { RedirectToExpertises } from "./components/RedirectToExpertises";
+import { RedirectExpertiseSlugToService } from "./components/RedirectExpertiseSlugToService";
 import AdminLayout from "./layouts/AdminLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { RealisationsAdmin } from "./pages/admin/RealisationsAdmin";
@@ -109,11 +110,10 @@ export const router = createBrowserRouter([
           { path: "partenaires", Component: CabinetPartenaires },
         ],
       },
-      { path: "expertises", Component: Services },
-      { path: "expertises/:slug", Component: ServiceDetail },
-      // Redirection des anciennes URLs /services vers /expertises
-      { path: "services", element: <Navigate to="/expertises" replace /> },
-      { path: "services/:slug", Component: RedirectToExpertises },
+      { path: "expertises", Component: Expertises },
+      { path: "expertises/:slug", Component: RedirectExpertiseSlugToService },
+      { path: "services", Component: Services },
+      { path: "services/:slug", Component: ServiceDetail },
       { path: "nos-realisations", Component: Portfolio },
       { path: "opportunite/:postId", Component: OpportunityPostPublic },
       { path: "opportunites", Component: Partners },

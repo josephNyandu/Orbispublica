@@ -291,7 +291,7 @@ export function ExpertisesPublicationAdmin() {
                 <TableHead className="hidden md:table-cell">
                   <span className="inline-flex items-center gap-1">
                     Slug
-                    <AdminInfoTooltip text="Identifiant d’URL (/expertises/…) — fixe dans le code, non modifiable ici." side="bottom" />
+                    <AdminInfoTooltip text="Identifiant d’URL (/services/…) — fixe dans le code, non modifiable ici." side="bottom" />
                   </span>
                 </TableHead>
                 <TableHead className="w-[130px]">
@@ -393,7 +393,7 @@ export function ExpertisesPublicationAdmin() {
                     <div className="flex flex-wrap justify-end gap-1">
                       {row.published && (
                         <Button variant="ghost" size="sm" className="h-8 gap-1 px-2" asChild>
-                          <Link to={`/expertises/${row.slug}`} target="_blank" rel="noreferrer">
+                          <Link to={`/services/${row.slug}`} target="_blank" rel="noreferrer">
                             <ExternalLink className="size-3.5" />
                             Site
                           </Link>

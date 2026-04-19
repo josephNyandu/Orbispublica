@@ -203,7 +203,7 @@ export function Home() {
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
               >
                 <Link 
-                  to={`/expertises/${service.slug}`}
+                  to={`/services/${service.slug}`}
                   className="group block h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100"
                 >
                   <div className="relative h-56 overflow-hidden">
@@ -237,10 +237,10 @@ export function Home() {
 
           <div className="text-center mt-16">
             <Link 
-              to="/expertises" 
+              to="/services" 
               className="inline-flex items-center justify-center px-8 py-4 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
             >
-              VOIR TOUTES NOS EXPERTISES
+              VOIR TOUS NOS SERVICES
             </Link>
           </div>
         </div>

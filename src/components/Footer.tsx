@@ -35,7 +35,8 @@ export function Footer() {
             </h3>
             <ul className="space-y-3">
               <li><Link to="/notre-cabinet" className="hover:text-blue-500 transition-colors">Cabinet</Link></li>
-              <li><Link to="/expertises" className="hover:text-blue-500 transition-colors">Nos expertises</Link></li>
+              <li><Link to="/expertises" className="hover:text-blue-500 transition-colors">Expertises</Link></li>
+              <li><Link to="/services" className="hover:text-blue-500 transition-colors">Services</Link></li>
               <li><Link to="/nos-realisations" className="hover:text-blue-500 transition-colors">Réalisations</Link></li>
               <li><Link to="/opportunites" className="hover:text-blue-500 transition-colors">Opportunités</Link></li>
               <li><Link to="/publications" className="hover:text-blue-500 transition-colors">Publications</Link></li>
@@ -47,14 +48,14 @@ export function Footer() {
           {/* Services */}
           <div>
             <h3 className="text-white font-bold text-lg mb-6 relative inline-block">
-              Nos expertises
+              Nos services
               <span className="absolute -bottom-2 left-0 w-12 h-1 bg-blue-500"></span>
             </h3>
             <ul className="space-y-3 text-sm">
               {visibleServices.map((service) => (
                 <li key={service.slug}>
                   <Link
-                    to={`/expertises/${service.slug}`}
+                    to={`/services/${service.slug}`}
                     className="hover:text-blue-500 transition-colors"
                   >
                     {service.title}
