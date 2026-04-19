@@ -42,6 +42,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -556,6 +557,9 @@ export function OpportunitesPublicationAdmin() {
         <DialogContent className="max-h-[min(92vh,52rem)] overflow-y-auto sm:max-w-xl">
           <DialogHeader>
             <DialogTitle>{editingId == null ? "Nouvelle publication" : "Modifier la publication"}</DialogTitle>
+            <DialogDescription className="sr-only">
+              Complétez la fiche opportunité (liste et page publique), puis enregistrez.
+            </DialogDescription>
           </DialogHeader>
           <form
             className="space-y-4"

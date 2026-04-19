@@ -102,10 +102,11 @@ export async function fetchPublicRealisations(): Promise<Realisation[]> {
   return parseJson<Realisation[]>(res);
 }
 
-export async function authMe(): Promise<{ ok: boolean; email: string | null }> {
+export async function authMe(): Promise<{ ok: boolean; email: string | null; isSiteAdmin: boolean }> {
   if (isSupabaseConfigured()) return sb.authMe();
   const res = await fetch("/api/auth/me", { credentials: "include" });
-  return parseJson(res);
+  const body = await parseJson<{ ok: boolean; email: string | null; isSiteAdmin?: boolean }>(res);
+  return { ...body, isSiteAdmin: body.isSiteAdmin !== false };
 }
 
 export async function login(

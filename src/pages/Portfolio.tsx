@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { fetchPublicRealisations, type Realisation } from "@/lib/api";
+import { SEO } from "@/components/SEO";
 
 export function Portfolio() {
   const [projects, setProjects] = useState<Realisation[]>([]);
@@ -31,16 +32,20 @@ export function Portfolio() {
 
   return (
     <div className="pt-20">
-      <div className="bg-slate-800 py-20 text-white">
+      <SEO 
+        title="Nos Réalisations" 
+        description="Découvrez nos projets réussis dans divers secteurs et contextes institutionnels en République Démocratique du Congo." 
+      />
+      <div className="bg-slate-800 py-12 md:py-20 text-white">
         <div className="container mx-auto px-6 md:px-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Nos réalisations</h1>
+          <h1 className="text-3xl md:text-5xl font-bold mb-6">Nos réalisations</h1>
           <p className="text-xl text-slate-300 max-w-3xl">
             Un portefeuille diversifié de missions réussies, couvrant un large éventail de secteurs et de contextes institutionnels.
           </p>
         </div>
       </div>
 
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="container mx-auto px-6 md:px-10">
           {loading && (
             <p className="text-center text-slate-600 py-12">Chargement des réalisations…</p>
@@ -56,7 +61,7 @@ export function Portfolio() {
             </p>
           )}
           {!loading && !error && projects.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
               {projects.map((project) => (
                 <motion.div
                   key={project.id}
@@ -73,7 +78,7 @@ export function Portfolio() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  <div className="p-8">
+                  <div className="p-6 md:p-8">
                     <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">
                       {project.category}
                     </div>

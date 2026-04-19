@@ -213,6 +213,29 @@ html {
   font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Défilement dans le main : barre plus fine que la barre système (surtout Windows) */
+.admin-shell .admin-main-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(148 163 184 / 0.55) rgb(241 245 249);
+}
+
+.admin-shell .admin-main-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-shell .admin-main-scroll::-webkit-scrollbar-track {
+  background: rgb(241 245 249);
+}
+
+.admin-shell .admin-main-scroll::-webkit-scrollbar-thumb {
+  background: rgb(148 163 184 / 0.55);
+  border-radius: 9999px;
+}
+
+.admin-shell .admin-main-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgb(100 116 139 / 0.75);
+}
+
 /* Padding explicite : évite les conflits visuels quand `container` et les utilitaires px/py sont sur le même nœud. */
 .admin-shell .admin-main-pad {
   box-sizing: border-box;

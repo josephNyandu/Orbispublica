@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { ArrowRight, CheckCircle2, Building2, Users, Trophy, Globe2, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useServicePublications } from '@/hooks/useServicePublications';
+import { SEO } from '@/components/SEO';
 
 export function Home() {
   const { visibleServices } = useServicePublications();
@@ -25,6 +26,7 @@ export function Home() {
 
   return (
     <div className="bg-blue-50">
+      <SEO />
       {/* Hero Section */}
       <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0 bg-primary">
@@ -68,7 +70,7 @@ export function Home() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="max-w-4xl"
           >
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 tracking-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 tracking-tight">
               Projets,<br /> 
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Partenariats</span> <br/>
               & Financements
@@ -98,7 +100,7 @@ export function Home() {
       </section>
 
       {/* Introduction Section */}
-      <section className="py-24 bg-white relative">
+      <section className="py-16 md:py-24 bg-white relative">
         <div className="container mx-auto px-6 md:px-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <motion.div 
@@ -108,7 +110,7 @@ export function Home() {
               transition={{ duration: 0.6 }}
             >
               <h4 className="text-blue-600 font-bold uppercase tracking-widest text-sm mb-4">À Propos d'Orbis Publica</h4>
-              <h2 className="text-4xl md:text-5xl font-bold text-primary mb-8 leading-tight">
+              <h2 className="text-3xl md:text-5xl font-bold text-primary mb-8 leading-tight">
                 Un partenaire stratégique pour les projets de développement en rdc
               </h2>
               
@@ -179,13 +181,13 @@ export function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-24 bg-slate-50 relative overflow-hidden">
+      <section className="py-16 md:py-24 bg-slate-50 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-100/50 skew-x-12 transform translate-x-1/2"></div>
         
         <div className="container mx-auto px-6 md:px-10 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-20">
             <h4 className="text-blue-600 font-bold uppercase tracking-widest text-sm mb-3">Nos Expertises</h4>
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">Une offre de services à 360°</h2>
+            <h2 className="text-3xl md:text-5xl font-bold text-primary mb-6">Une offre de services à 360°</h2>
             <p className="text-slate-600 text-lg">
               Des solutions concrètes et opérationnelles pour répondre aux défis des acteurs publics et privés en RDC.
             </p>
@@ -245,7 +247,7 @@ export function Home() {
       </section>
 
       {/* Stats Section with Parallax Look */}
-      <section className="relative py-32 bg-primary fixed-bg overflow-hidden">
+      <section className="relative py-20 md:py-32 bg-primary fixed-bg overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
              src="https://images.unsplash.com/photo-1761437855740-c894da924d79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
@@ -256,7 +258,7 @@ export function Home() {
         </div>
 
         <div className="container mx-auto px-6 md:px-10 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
             {[
               { icon: CheckCircle2, value: "100%", label: "Conformité" },
               { icon: Users, value: "+50", label: "Experts" },
@@ -287,7 +289,7 @@ export function Home() {
       </section>
 
       {/* Trust/Partners Section (New) */}
-      <section className="py-20 bg-white">
+      <section className="py-16 md:py-20 bg-white">
         <div className="container mx-auto px-6 md:px-10 text-center">
           <h3 className="text-lg text-slate-400 font-semibold uppercase tracking-widest mb-12">Ils nous font confiance</h3>
           <div className="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
@@ -302,7 +304,7 @@ export function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-28 overflow-hidden">
+      <section className="relative py-20 md:py-28 overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1671722294182-ed01cbe66bd1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" 
@@ -320,7 +322,7 @@ export function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 max-w-4xl mx-auto leading-tight">
+            <h2 className="text-3xl md:text-5xl font-bold mb-8 max-w-4xl mx-auto leading-tight">
               Prêt à concrétiser vos ambitions ?
             </h2>
             <p className="text-xl text-blue-100/90 mb-10 max-w-2xl mx-auto leading-relaxed">

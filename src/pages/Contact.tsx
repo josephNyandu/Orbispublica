@@ -10,6 +10,7 @@ import {
 } from "../components/ui/accordion";
 import { useServicePublications } from "@/hooks/useServicePublications";
 import { useSiteContact } from "@/hooks/useSiteContact";
+import { SEO } from "@/components/SEO";
 
 type FormData = {
   fullName: string;
@@ -71,9 +72,13 @@ export function Contact() {
 
   return (
     <div className="pt-20">
-       <div className="bg-slate-800 py-20 text-white">
+      <SEO 
+        title="Contact" 
+        description="Contactez ORBIS PUBLICA pour tout accompagnement, demande de devis ou de partenariat." 
+      />
+       <div className="bg-slate-800 py-12 md:py-20 text-white">
         <div className="container mx-auto px-6 md:px-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Contactez-nous</h1>
+          <h1 className="text-3xl md:text-5xl font-bold mb-6">Contactez-nous</h1>
           <p className="text-xl text-slate-300 max-w-3xl">
             Vous souhaitez soumettre un projet, solliciter un accompagnement ou obtenir des informations ? 
             Nous sommes à votre disposition.
@@ -81,7 +86,7 @@ export function Contact() {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 md:px-10 py-20">
+      <div className="container mx-auto px-6 md:px-10 py-12 md:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           
           {/* Contact Info & Sidebar */}

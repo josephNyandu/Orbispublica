@@ -1,10 +1,15 @@
 import { motion } from 'motion/react';
 import { CheckCircle, Target, Users, ShieldCheck, Lightbulb } from 'lucide-react';
 import { firmPositioningParagraph, firmStrategicContextParagraph } from '@/data/siteCopy';
+import { SEO } from '@/components/SEO';
 
 export function About() {
   return (
     <div className="pt-20">
+      <SEO 
+        title="Notre Cabinet" 
+        description="Partenaire de confiance et facilitateur de projets, ORBIS PUBLICA accompagne les initiatives publiques et privées en RDC." 
+      />
       {/* Header */}
       <div className="bg-slate-800 py-20 text-white">
         <div className="container mx-auto px-6 md:px-10">

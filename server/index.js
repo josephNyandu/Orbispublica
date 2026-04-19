@@ -242,7 +242,7 @@ app.get("/api/auth/me", (req, res) => {
   if (!payload) {
     return res.status(401).json({ error: "Non authentifié" });
   }
-  res.json({ ok: true, email: process.env.ADMIN_EMAIL || null });
+  res.json({ ok: true, email: process.env.ADMIN_EMAIL || null, isSiteAdmin: true });
 });
 
 app.post("/api/auth/login", (req, res) => {

@@ -22,10 +22,11 @@ export default function AdminLayout() {
 
   return (
     <TooltipProvider delayDuration={280} skipDelayDuration={120}>
-      <div className="admin-shell min-h-screen bg-slate-100 text-slate-900 antialiased">
+      <div className="admin-shell flex h-[100dvh] max-h-[100dvh] min-h-0 flex-col overflow-hidden bg-slate-100 text-slate-900 antialiased">
         <header className="sticky top-0 z-20 border-b border-slate-200/90 bg-white/90 px-4 py-3 shadow-[0_1px_0_rgba(0,75,135,0.06)] backdrop-blur-md md:px-6">
-          <div className="container mx-auto flex flex-wrap items-center justify-between gap-3 px-6 md:px-10">
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          <div className="container mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-2 md:px-10 max-w-full">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 w-full md:w-auto overflow-hidden">
+              <div className="flex items-center gap-3">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -40,7 +41,8 @@ export default function AdminLayout() {
               <span className="hidden rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium uppercase tracking-wider text-slate-600 sm:inline">
                 Orbis Publica
               </span>
-              <nav className="flex w-full flex-wrap gap-0.5 sm:w-auto sm:pl-3 sm:border-l sm:border-slate-200">
+              </div>
+              <nav className="flex w-full overflow-x-auto whitespace-nowrap gap-1 pb-1 sm:pb-0 sm:w-auto sm:pl-3 sm:border-l sm:border-slate-200 scrollbar-hide">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className="inline-flex">
@@ -152,7 +154,7 @@ export default function AdminLayout() {
                 </Tooltip>
               </nav>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 self-start md:self-auto">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="inline-flex">
@@ -180,7 +182,7 @@ export default function AdminLayout() {
             </div>
           </div>
         </header>
-        <main className="container mx-auto min-w-0">
+        <main className="admin-main-scroll container mx-auto min-h-0 min-w-0 flex-1 overflow-y-auto">
           <div className="admin-main-pad">
             <Outlet />
           </div>

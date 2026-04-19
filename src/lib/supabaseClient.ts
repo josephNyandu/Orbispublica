@@ -24,6 +24,9 @@ function isValidSupabasePublicConfig(urlRaw: string, keyRaw: string): boolean {
   if (key.startsWith("eyJ")) {
     return key.length >= 120;
   }
+  if (key.startsWith("sb_publishable_") || key.startsWith("sb_secret_")) {
+    return key.length >= 20;
+  }
   if (key.startsWith("sb_")) {
     return key.length >= 20;
   }

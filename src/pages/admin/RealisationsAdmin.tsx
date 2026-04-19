@@ -27,6 +27,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -333,17 +334,18 @@ export function RealisationsAdmin() {
             <DialogTitle>
               {editingId === null ? "Nouvelle réalisation" : "Modifier la réalisation"}
             </DialogTitle>
+            <DialogDescription>
+              Enregistrez pour appliquer les changements sur le site. Ordre d’affichage : nombre plus
+              petit = carte plus haute. Désactiver « Publié » conserve la fiche en brouillon.
+            </DialogDescription>
           </DialogHeader>
           <form
             noValidate
             onSubmit={form.handleSubmit(onSubmit, onInvalidSubmit)}
-            className="space-y-4"
+            className="space-y-5"
           >
             <div className="space-y-2">
-              <div className="flex items-center gap-1.5">
-                <Label htmlFor="title">Titre</Label>
-                <AdminInfoTooltip text="Nom court et lisible de la réalisation (obligatoire)." />
-              </div>
+              <Label htmlFor="title">Titre</Label>
               <Input
                 id="title"
                 {...form.register("title", { required: "Le titre est requis" })}
@@ -353,10 +355,7 @@ export function RealisationsAdmin() {
               )}
             </div>
             <div className="space-y-2">
-              <div className="flex items-center gap-1.5">
-                <Label htmlFor="category">Catégorie</Label>
-                <AdminInfoTooltip text="Sert au classement visuel sur la page « Nos réalisations »." />
-              </div>
+              <Label htmlFor="category">Catégorie</Label>
               <Input
                 id="category"
                 {...form.register("category", { required: "La catégorie est requise" })}
@@ -379,7 +378,6 @@ export function RealisationsAdmin() {
                 <AdminImageField
                   id="realisation-image"
                   label="Image"
-                  tooltip="Envoyez un fichier (stocké sur ce serveur) ou, en option, une URL https."
                   value={field.value}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
@@ -388,10 +386,7 @@ export function RealisationsAdmin() {
               )}
             />
             <div className="space-y-2">
-              <div className="flex items-center gap-1.5">
-                <Label htmlFor="desc">Description</Label>
-                <AdminInfoTooltip text="Texte descriptif affiché sur la carte (obligatoire)." />
-              </div>
+              <Label htmlFor="desc">Description</Label>
               <Textarea
                 id="desc"
                 rows={5}
@@ -402,24 +397,18 @@ export function RealisationsAdmin() {
                 <p className="text-sm text-red-600">{form.formState.errors.desc.message}</p>
               )}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Switch
                 id="published"
                 checked={form.watch("published")}
                 onCheckedChange={(v) => form.setValue("published", v)}
               />
-              <div className="flex items-center gap-1.5">
-                <Label htmlFor="published" className="cursor-pointer">
-                  Publié sur le site
-                </Label>
-                <AdminInfoTooltip text="Décochez pour garder la carte en brouillon (invisible sur le site)." />
-              </div>
+              <Label htmlFor="published" className="cursor-pointer font-normal">
+                Publié sur le site
+              </Label>
             </div>
             <div className="space-y-2">
-              <div className="flex items-center gap-1.5">
-                <Label htmlFor="sort_order">Ordre d’affichage</Label>
-                <AdminInfoTooltip text="Nombre plus petit = position plus haute dans la liste publique." />
-              </div>
+              <Label htmlFor="sort_order">Ordre d’affichage</Label>
               <Input
                 id="sort_order"
                 type="number"

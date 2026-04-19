@@ -27,6 +27,44 @@ import { sanitizeServiceContent } from "./serviceContentSanitize";
 
 const CONTACT_KEY = "contact";
 
+// #region agent log
+const DEBUG_SESSION_STORAGE_KEY = "orbis_debug_session_60a48c";
+
+function dbgAgentLog(payload: {
+  hypothesisId: string;
+  location: string;
+  message: string;
+  data?: Record<string, unknown>;
+  runId?: string;
+}): void {
+  const body = {
+    sessionId: "60a48c",
+    timestamp: Date.now(),
+    runId: payload.runId ?? "pre-fix",
+    hypothesisId: payload.hypothesisId,
+    location: payload.location,
+    message: payload.message,
+    data: payload.data ?? {},
+  };
+  fetch("http://127.0.0.1:7791/ingest/67dc14b1-df55-42fa-917c-cba48eaf667f", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Debug-Session-Id": "60a48c",
+    },
+    body: JSON.stringify(body),
+  }).catch(() => {});
+  try {
+    const raw = sessionStorage.getItem(DEBUG_SESSION_STORAGE_KEY);
+    const arr: unknown[] = raw ? (JSON.parse(raw) as unknown[]) : [];
+    arr.push(body);
+    sessionStorage.setItem(DEBUG_SESSION_STORAGE_KEY, JSON.stringify(arr.slice(-25)));
+  } catch {
+    /* ignore */
+  }
+}
+// #endregion
+
 async function processDueScheduled(): Promise<void> {
   const sb = getSupabase();
   await sb.rpc("process_due_scheduled_opportunity_posts");
@@ -189,14 +227,16 @@ export async function fetchPublicRealisations(): Promise<Realisation[]> {
   return (data ?? []).map((r) => realisationFromRow(r as Record<string, unknown>));
 }
 
-export async function authMe(): Promise<{ ok: boolean; email: string | null }> {
+export async function authMe(): Promise<{ ok: boolean; email: string | null; isSiteAdmin: boolean }> {
   const sb = getSupabase();
   const { data, error } = await sb.auth.getSession();
   if (error) throw new Error(error.message);
   if (!data.session?.user) {
     throw new Error("Non authentifié");
   }
-  return { ok: true, email: data.session.user.email ?? null };
+  const uid = data.session.user.id;
+  const { data: sa } = await sb.from("site_admins").select("user_id").eq("user_id", uid).maybeSingle();
+  return { ok: true, email: data.session.user.email ?? null, isSiteAdmin: Boolean(sa) };
 }
 
 export async function login(email: string, password: string, _remember = true): Promise<void> {
@@ -294,8 +334,13 @@ export async function createRealisation(
       updated_at: now,
     })
     .select("*")
-    .single();
+    .maybeSingle();
   if (error) throw new Error(error.message);
+  if (!data) {
+    throw new Error(
+      "Création refusée : compte sans droit administrateur (table site_admins) ou données rejetées par la politique de sécurité.",
+    );
+  }
   return realisationFromRow(data as Record<string, unknown>);
 }
 
@@ -304,6 +349,28 @@ export async function updateRealisation(
   partial: Partial<Pick<Realisation, "title" | "desc" | "category" | "image" | "published" | "sort_order">>
 ): Promise<Realisation> {
   const sb = getSupabase();
+  // #region agent log
+  {
+    const { data: sess } = await sb.auth.getSession();
+    const uid = sess.session?.user?.id ?? null;
+    let siteAdminRowFound = false;
+    if (uid) {
+      const { data: sa } = await sb.from("site_admins").select("user_id").eq("user_id", uid).maybeSingle();
+      siteAdminRowFound = Boolean(sa);
+    }
+    dbgAgentLog({
+      hypothesisId: "H2",
+      location: "supabaseBackend.ts:updateRealisation(entry)",
+      message: "session and site_admins",
+      data: {
+        realisationId: id,
+        hasSession: Boolean(sess.session),
+        siteAdminRowFound,
+        partialKeys: Object.keys(partial),
+      },
+    });
+  }
+  // #endregion
   const { data: existing, error: e0 } = await sb.from("realisations").select("*").eq("id", id).maybeSingle();
   if (e0) throw new Error(e0.message);
   if (!existing) throw new Error("Non trouvé");
@@ -336,8 +403,27 @@ export async function updateRealisation(
     })
     .eq("id", id)
     .select("*")
-    .single();
+    .maybeSingle();
+  // #region agent log
+  dbgAgentLog({
+    hypothesisId: "H2",
+    location: "supabaseBackend.ts:updateRealisation(after-update)",
+    message: "update+select",
+    data: {
+      realisationId: id,
+      hasError: Boolean(error),
+      errCode: error?.code ?? null,
+      errMessage: error?.message ?? null,
+      returnedRow: data != null,
+    },
+  });
+  // #endregion
   if (error) throw new Error(error.message);
+  if (!data) {
+    throw new Error(
+      "Enregistrement refusé : compte sans droit administrateur (table site_admins) ou fiche introuvable.",
+    );
+  }
   return realisationFromRow(data as Record<string, unknown>);
 }
 
@@ -663,11 +749,32 @@ export async function uploadAdminImage(file: File): Promise<string> {
   assertAdminImageFile(file);
   const sb = getSupabase();
   const path = `media/${crypto.randomUUID()}-${safeStorageName(file.name)}`;
+  const rawType = (file.type || "").trim().toLowerCase();
+  /** Certains navigateurs envoient image/pjpeg ; le bucket peut n’autoriser que image/jpeg → 400. */
+  const uploadContentType = rawType === "image/pjpeg" ? "image/jpeg" : rawType || undefined;
   const { error } = await sb.storage.from(SUPABASE_ADMIN_MEDIA_BUCKET).upload(path, file, {
     cacheControl: "3600",
     upsert: false,
-    contentType: file.type || undefined,
+    contentType: uploadContentType,
   });
+  // #region agent log
+  if (error) {
+    const errRec = error as { message?: string; name?: string; statusCode?: string | number };
+    dbgAgentLog({
+      hypothesisId: "H1",
+      location: "supabaseBackend.ts:uploadAdminImage",
+      message: "storage upload failed",
+      data: {
+        bucket: SUPABASE_ADMIN_MEDIA_BUCKET,
+        fileNameLen: file.name.length,
+        contentType: file.type || "(empty)",
+        statusCode: errRec.statusCode ?? null,
+        errName: errRec.name ?? null,
+        errMessage: errRec.message ?? String(error),
+      },
+    });
+  }
+  // #endregion
   if (error) throw new Error(error.message);
   const { data: pub } = sb.storage.from(SUPABASE_ADMIN_MEDIA_BUCKET).getPublicUrl(path);
   return pub.publicUrl;
