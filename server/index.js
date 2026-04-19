@@ -46,6 +46,42 @@ function runScheduledOpportunityPublishing() {
 
 setInterval(runScheduledOpportunityPublishing, 60_000);
 
+/** 
+ * Service Keep-Alive pour prévenir la mise en veille sur Render (Free Tier).
+ * S'exécute toutes les 14 minutes, sauf entre 2h et 5h du matin pour préserver le quota.
+ */
+function startKeepAliveService() {
+  if (process.env.NODE_ENV !== "production") return;
+
+  const url = process.env.RENDER_EXTERNAL_URL || process.env.SITE_URL;
+  if (!url) {
+    console.log("[keep-alive] Aucune URL externe configurée. Service désactivé.");
+    return;
+  }
+
+  console.log(`[keep-alive] Service activé pour ${url} (sauf 2h-5h UTC)`);
+
+  setInterval(async () => {
+    try {
+      const currentHour = new Date().getUTCHours();
+      
+      // Restriction de 2h à 5h (UTC) pour préserver le quota
+      if (currentHour >= 2 && currentHour < 5) {
+        // console.log("[keep-alive] Pause nocturne (quota preservé)");
+        return;
+      }
+
+      const res = await fetch(`${url}/api/health`);
+      if (!res.ok) throw new Error(`Status: ${res.status}`);
+      // console.log("[keep-alive] Ping réussi");
+    } catch (err) {
+      console.error("[keep-alive] Erreur lors du ping:", err.message);
+    }
+  }, 14 * 60 * 1000); // 14 minutes
+}
+
+startKeepAliveService();
+
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
 
@@ -97,6 +133,10 @@ function parseBody(body) {
 }
 
 /** --- Public --- */
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", time: new Date().toISOString() });
+});
+
 app.get("/api/realisations", (req, res) => {
   const db = getDb();
   const rows = db
