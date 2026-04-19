@@ -1,10 +1,11 @@
+import { PageHeroBanner } from '@/components/PageHeroBanner';
 import { OpportunityPostsSection } from '@/components/OpportunityPostsSection';
 import { OpportuniteSuivantNav } from '@/components/OpportuniteSuivantNav';
 
 export function Partners() {
   return (
     <div className="pt-20">
-      <div className="bg-slate-800 py-12 md:py-20 text-white">
+      <PageHeroBanner>
         <div className="container mx-auto px-6 md:px-10">
           <p className="text-sm font-semibold uppercase tracking-widest text-blue-400 mb-3">
             Appels d&apos;offres
@@ -16,7 +17,7 @@ export function Partners() {
             d&apos;administration.
           </p>
         </div>
-      </div>
+      </PageHeroBanner>
 
       <OpportunityPostsSection category="opportunites" />
       <OpportuniteSuivantNav category="opportunites" />

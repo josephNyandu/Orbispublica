@@ -5,6 +5,7 @@ import { toast } from "sonner@2.0.3";
 import { subscribeOpportunityFeed } from "@/lib/api";
 import { setOpportunityNavUnlocked } from "@/lib/opportunityNavUnlock";
 import { AuthPortalTabs } from "@/components/AuthPortalTabs";
+import { PageHeroBanner } from "@/components/PageHeroBanner";
 
 type RegistreForm = {
   email: string;
@@ -45,7 +46,7 @@ export function Registre() {
 
   return (
     <div className="pt-20">
-      <div className="bg-slate-800 py-16 text-white">
+      <PageHeroBanner className="py-16">
         <div className="container mx-auto px-6 md:px-10">
           <div className="mb-4">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Registre</h1>
@@ -55,7 +56,7 @@ export function Registre() {
             e-mail). L&apos;onglet Connexion sert uniquement à l&apos;administration du site.
           </p>
         </div>
-      </div>
+      </PageHeroBanner>
 
       <div className="container mx-auto px-6 md:px-10 py-16 md:py-20">
         <div className="max-w-md mx-auto">

@@ -1,3 +1,4 @@
+import { PageHeroBanner } from '@/components/PageHeroBanner';
 import { OpportunityPostsSection } from '@/components/OpportunityPostsSection';
 import { OpportuniteRegistreAvertissement } from '@/components/OpportuniteRegistreAvertissement';
 import { OpportuniteSuivantNav } from '@/components/OpportuniteSuivantNav';
@@ -5,7 +6,7 @@ import { OpportuniteSuivantNav } from '@/components/OpportuniteSuivantNav';
 export function AlertesPersonnalises() {
   return (
     <div className="pt-20">
-      <div className="bg-slate-800 py-12 md:py-20 text-white">
+      <PageHeroBanner>
         <div className="container mx-auto px-4 md:px-6">
           <p className="text-sm font-semibold uppercase tracking-widest text-blue-400 mb-3">
             Opportunités
@@ -16,7 +17,7 @@ export function AlertesPersonnalises() {
             ci-dessous sont des données de démonstration enregistrées comme les autres opportunités du site.
           </p>
         </div>
-      </div>
+      </PageHeroBanner>
 
       <OpportuniteRegistreAvertissement />
       <OpportunityPostsSection category="alertes-personnalisees" />

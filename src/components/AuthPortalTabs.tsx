@@ -1,4 +1,5 @@
 import { NavLink } from "react-router";
+import { getLoginHref, isExternalLoginConfigured } from "@/lib/loginUrl";
 
 /** Bascule Connexion (admin) / Registre (abonnement publications appels d’offres). */
 export function AuthPortalTabs() {
@@ -7,15 +8,23 @@ export function AuthPortalTabs() {
       isActive ? "bg-white text-blue-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
     }`;
 
+  const connexionInactive = tabClass({ isActive: false });
+
   return (
     <div
       className="mb-8 flex rounded-xl border border-slate-200 bg-slate-50 p-1"
       role="tablist"
       aria-label="Connexion ou registre"
     >
-      <NavLink to="/login" end className={tabClass}>
-        Connexion
-      </NavLink>
+      {isExternalLoginConfigured() ? (
+        <a href={getLoginHref()} className={connexionInactive}>
+          Connexion
+        </a>
+      ) : (
+        <NavLink to="/login" end className={tabClass}>
+          Connexion
+        </NavLink>
+      )}
       <NavLink to="/registre" className={tabClass}>
         Registre
       </NavLink>

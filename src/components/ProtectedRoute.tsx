@@ -1,7 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Link, Navigate, useLocation } from "react-router";
 import { authMe, logout } from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { getLoginHref, isAbsoluteLoginHref } from "@/lib/loginUrl";
+
+function ExternalLoginRedirect({ href }: { href: string }) {
+  useLayoutEffect(() => {
+    window.location.replace(href);
+  }, [href]);
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center text-slate-600">
+      Redirection vers la connexion…
+    </div>
+  );
+}
 
 type Props = {
   children: React.ReactNode;
@@ -39,8 +51,12 @@ export function ProtectedRoute({ children }: Props) {
   }
 
   if (status === "unauth") {
-    const redirect = encodeURIComponent(location.pathname + location.search);
-    return <Navigate to={`/login?redirect=${redirect}`} replace />;
+    const redirectPath = location.pathname + location.search;
+    const href = getLoginHref({ redirectPath });
+    if (isAbsoluteLoginHref(href)) {
+      return <ExternalLoginRedirect href={href} />;
+    }
+    return <Navigate to={href} replace />;
   }
 
   if (status === "forbidden") {
@@ -64,7 +80,7 @@ export function ProtectedRoute({ children }: Props) {
             variant="secondary"
             onClick={() => {
               void logout().finally(() => {
-                window.location.assign("/login");
+                window.location.assign(getLoginHref());
               });
             }}
           >

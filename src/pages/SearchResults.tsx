@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { fetchSiteSearch, type SiteSearchHit } from "@/lib/api";
+import { PageHeroBanner } from "@/components/PageHeroBanner";
 
 function typeLabel(t: SiteSearchHit["type"]): string {
   switch (t) {
@@ -56,7 +57,7 @@ export function SearchResults() {
 
   return (
     <div className="pt-20 min-h-[50vh]">
-      <div className="bg-slate-800 py-12 md:py-16 text-white">
+      <PageHeroBanner className="py-12 md:py-16">
         <div className="container mx-auto px-6 md:px-10">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">Recherche</h1>
           {q ? (
@@ -69,7 +70,7 @@ export function SearchResults() {
             </p>
           )}
         </div>
-      </div>
+      </PageHeroBanner>
 
       <section className="py-10 md:py-14 bg-white border-t border-slate-100">
         <div className="container mx-auto px-6 md:px-10 max-w-3xl">
