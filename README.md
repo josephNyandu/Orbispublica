@@ -9,3 +9,12 @@
 
   Run `npm run dev` to start the development server.
   
+
+  depot GitHub 
+
+
+render pour le déploiement 
+  nyandubasix@gmail.com
+
+depot github
+  josephnyandu

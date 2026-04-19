@@ -741,7 +741,7 @@ app.delete("/api/admin/opportunity-feed-subscribers/:id", authMiddleware, (req, 
 });
 
 /** --- Production: static --- */
-const buildDir = path.join(__dirname, "..", "build");
+const buildDir = path.join(__dirname, "..", "dist");
 if (fs.existsSync(buildDir)) {
   app.use(express.static(buildDir));
   app.get("*", (req, res, next) => {
