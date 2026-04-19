@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { fetchPublicRealisations, type Realisation } from "@/lib/api";
 import { SEO } from "@/components/SEO";
+import { PageHeroBanner } from "@/components/PageHeroBanner";
 
 export function Portfolio() {
   const [projects, setProjects] = useState<Realisation[]>([]);
@@ -36,14 +37,14 @@ export function Portfolio() {
         title="Nos Réalisations" 
         description="Découvrez nos projets réussis dans divers secteurs et contextes institutionnels en République Démocratique du Congo." 
       />
-      <div className="bg-slate-800 py-12 md:py-20 text-white">
+      <PageHeroBanner>
         <div className="container mx-auto px-6 md:px-10">
           <h1 className="text-3xl md:text-5xl font-bold mb-6">Nos réalisations</h1>
           <p className="text-xl text-slate-300 max-w-3xl">
             Un portefeuille diversifié de missions réussies, couvrant un large éventail de secteurs et de contextes institutionnels.
           </p>
         </div>
-      </div>
+      </PageHeroBanner>
 
       <section className="py-12 md:py-20 bg-white">
         <div className="container mx-auto px-6 md:px-10">

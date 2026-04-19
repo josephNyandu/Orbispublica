@@ -1,8 +1,13 @@
 import { createBrowserRouter } from "react-router";
 import AppLayout from "./AppLayout";
 import { Home } from "./pages/Home";
-import { About } from "./pages/About";
+import CabinetLayout from "./layouts/CabinetLayout";
+import { CabinetAPropos } from "./pages/cabinet/CabinetAPropos";
+import { CabinetQuiSommesNous } from "./pages/cabinet/CabinetQuiSommesNous";
+import { CabinetVisionMission } from "./pages/cabinet/CabinetVisionMission";
+import { CabinetPartenaires } from "./pages/cabinet/CabinetPartenaires";
 import { Services } from "./pages/Services";
+import { Expertises } from "./pages/Expertises";
 import { ServiceDetail } from "./pages/ServiceDetail";
 import { Portfolio } from "./pages/Portfolio";
 import { Partners } from "./pages/Partners";
@@ -12,13 +17,16 @@ import { FinancementsSubventions } from "./pages/FinancementsSubventions";
 import { ProjetsPppInvestissement } from "./pages/ProjetsPppInvestissement";
 import { AlertesPersonnalises } from "./pages/AlertesPersonnalises";
 import { Blog } from "./pages/Blog";
-import { Careers } from "./pages/Careers";
+import PublicationsLayout from "./layouts/PublicationsLayout";
+import { PublicationsActualites } from "./pages/publications/PublicationsActualites";
+import { PublicationsEvenements } from "./pages/publications/PublicationsEvenements";
+import { PublicationsPotentialites } from "./pages/publications/PublicationsPotentialites";
 import { Contact } from "./pages/Contact";
 import { SearchResults } from "./pages/SearchResults";
 import { Login } from "./pages/Login";
 import { Registre } from "./pages/Registre";
 import { Navigate } from "react-router";
-import { RedirectToExpertises } from "./components/RedirectToExpertises";
+import { RedirectExpertiseSlugToService } from "./components/RedirectExpertiseSlugToService";
 import AdminLayout from "./layouts/AdminLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { RealisationsAdmin } from "./pages/admin/RealisationsAdmin";
@@ -91,12 +99,21 @@ export const router = createBrowserRouter([
     Component: AppLayout,
     children: [
       { index: true, Component: Home },
-      { path: "notre-cabinet", Component: About },
-      { path: "expertises", Component: Services },
-      { path: "expertises/:slug", Component: ServiceDetail },
-      // Redirection des anciennes URLs /services vers /expertises
-      { path: "services", element: <Navigate to="/expertises" replace /> },
-      { path: "services/:slug", Component: RedirectToExpertises },
+      {
+        path: "notre-cabinet",
+        Component: CabinetLayout,
+        children: [
+          { index: true, element: <Navigate to="a-propos" replace /> },
+          { path: "a-propos", Component: CabinetAPropos },
+          { path: "qui-sommes-nous", Component: CabinetQuiSommesNous },
+          { path: "vision-mission", Component: CabinetVisionMission },
+          { path: "partenaires", Component: CabinetPartenaires },
+        ],
+      },
+      { path: "expertises", Component: Expertises },
+      { path: "expertises/:slug", Component: RedirectExpertiseSlugToService },
+      { path: "services", Component: Services },
+      { path: "services/:slug", Component: ServiceDetail },
       { path: "nos-realisations", Component: Portfolio },
       { path: "opportunite/:postId", Component: OpportunityPostPublic },
       { path: "opportunites", Component: Partners },
@@ -106,7 +123,17 @@ export const router = createBrowserRouter([
       { path: "alertes-personnalisees", Component: AlertesPersonnalises },
       { path: "nos-partenaires", element: <Navigate to="/opportunites" replace /> },
       { path: "blog", Component: Blog },
-      { path: "carrieres", Component: Careers },
+      {
+        path: "publications",
+        Component: PublicationsLayout,
+        children: [
+          { index: true, element: <Navigate to="actualites" replace /> },
+          { path: "actualites", Component: PublicationsActualites },
+          { path: "evenements", Component: PublicationsEvenements },
+          { path: "potentialites", Component: PublicationsPotentialites },
+        ],
+      },
+      { path: "carrieres", element: <Navigate to="/publications/actualites" replace /> },
       { path: "contact", Component: Contact },
       { path: "recherche", Component: SearchResults },
       { path: "login", Component: Login },

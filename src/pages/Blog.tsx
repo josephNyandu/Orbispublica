@@ -1,5 +1,6 @@
 import { Newspaper, CalendarDays, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
+import { PageHeroBanner } from '@/components/PageHeroBanner';
 
 export function Blog() {
   const posts = [
@@ -25,14 +26,14 @@ export function Blog() {
 
   return (
     <div className="pt-20">
-      <div className="bg-slate-800 py-20 text-white">
+      <PageHeroBanner className="py-20">
         <div className="container mx-auto px-6 md:px-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Actualités & Ressources</h1>
           <p className="text-xl text-slate-300 max-w-3xl">
             Analyses, mises à jour réglementaires et retours d’expérience sur la gestion publique et le développement.
           </p>
         </div>
-      </div>
+      </PageHeroBanner>
 
       <section className="py-20 bg-slate-50">
         <div className="container mx-auto px-6 md:px-10">

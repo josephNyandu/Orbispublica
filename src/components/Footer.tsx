@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube, Instagram } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Facebook, Twitter, Linkedin, Youtube, Instagram } from 'lucide-react';
 import { useServicePublications } from '@/hooks/useServicePublications';
 import { useSiteContact } from '@/hooks/useSiteContact';
 import { BrandLogoLink } from '@/components/BrandLogo';
@@ -35,11 +35,12 @@ export function Footer() {
             </h3>
             <ul className="space-y-3">
               <li><Link to="/notre-cabinet" className="hover:text-blue-500 transition-colors">Cabinet</Link></li>
-              <li><Link to="/expertises" className="hover:text-blue-500 transition-colors">Nos expertises</Link></li>
+              <li><Link to="/expertises" className="hover:text-blue-500 transition-colors">Expertises</Link></li>
+              <li><Link to="/services" className="hover:text-blue-500 transition-colors">Services</Link></li>
               <li><Link to="/nos-realisations" className="hover:text-blue-500 transition-colors">Réalisations</Link></li>
               <li><Link to="/opportunites" className="hover:text-blue-500 transition-colors">Opportunités</Link></li>
-              <li><Link to="/blog" className="hover:text-blue-500 transition-colors">Actualités</Link></li>
-              <li><Link to="/carrieres" className="hover:text-blue-500 transition-colors">Carrières</Link></li>
+              <li><Link to="/publications" className="hover:text-blue-500 transition-colors">Publications</Link></li>
+              <li><Link to="/blog" className="hover:text-blue-500 transition-colors">Blog & ressources</Link></li>
               <li><Link to="/contact" className="hover:text-blue-500 transition-colors">Contact</Link></li>
             </ul>
           </div>
@@ -47,14 +48,14 @@ export function Footer() {
           {/* Services */}
           <div>
             <h3 className="text-white font-bold text-lg mb-6 relative inline-block">
-              Nos expertises
+              Nos services
               <span className="absolute -bottom-2 left-0 w-12 h-1 bg-blue-500"></span>
             </h3>
             <ul className="space-y-3 text-sm">
               {visibleServices.map((service) => (
                 <li key={service.slug}>
                   <Link
-                    to={`/expertises/${service.slug}`}
+                    to={`/services/${service.slug}`}
                     className="hover:text-blue-500 transition-colors"
                   >
                     {service.title}
@@ -74,6 +75,14 @@ export function Footer() {
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 text-blue-500 mr-3 mt-0.5 flex-shrink-0" />
                 <span>{siteContact.addressLine}</span>
+              </li>
+              <li className="flex items-start">
+                <Clock className="h-5 w-5 text-blue-500 mr-3 mt-0.5 flex-shrink-0" aria-hidden />
+                <div className="space-y-1">
+                  <span className="block text-white font-semibold">Heures d&apos;ouverture</span>
+                  <span className="block">{siteContact.openingHours.weekdays}</span>
+                  <span className="block">{siteContact.openingHours.saturday}</span>
+                </div>
               </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 text-blue-500 mr-3 flex-shrink-0" />

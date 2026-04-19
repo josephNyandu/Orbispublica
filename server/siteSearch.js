@@ -184,7 +184,7 @@ export function searchPublicSite(db, rawQuery, limit = DEFAULT_LIMIT) {
       id: row.slug,
       title,
       excerpt: excerpt(desc || title),
-      href: `/expertises/${encodeURIComponent(row.slug)}`,
+      href: `/services/${encodeURIComponent(row.slug)}`,
       meta: "Expertise",
     });
   }

@@ -1,16 +1,9 @@
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { MapPin, Phone, Mail, Clock, Facebook, Twitter, Linkedin, Youtube, Instagram } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../components/ui/accordion";
 import { useServicePublications } from "@/hooks/useServicePublications";
-import { useSiteContact } from "@/hooks/useSiteContact";
 import { SEO } from "@/components/SEO";
+import { PageHeroBanner } from "@/components/PageHeroBanner";
 
 type FormData = {
   fullName: string;
@@ -28,35 +21,7 @@ type FormData = {
   newsletter: boolean;
 };
 
-const faqs = [
-  {
-    question: "Quels types de projets accompagne ORBIS PUBLICA ?",
-    answer: "Nous intervenons principalement sur les marchés publics, projets financés, partenariats public-privé, ainsi que sur le renforcement des capacités institutionnelles et économiques dans divers secteurs."
-  },
-  {
-    question: "Comment garantissez-vous la conformité ?",
-    answer: "Nous disposons d’une expertise approfondie du cadre légal national et des standards internationaux. Nous réalisons des audits réguliers et contrôles internes."
-  },
-  {
-    question: "Quels sont les principaux bénéficiaires ?",
-    answer: "Maîtres d’ouvrages publics et privés, entreprises locales et internationales, investisseurs, partenaires techniques et financiers, porteurs de projets."
-  },
-  {
-    question: "Proposez-vous des formations ?",
-    answer: "Oui, nous organisons régulièrement des formations, séminaires et ateliers pratiques sur les marchés publics, la gouvernance, la fiscalité, etc."
-  },
-  {
-    question: "Comment soumettre un projet ?",
-    answer: "Utilisez le formulaire de contact sur cette page en fournissant les informations clés. Un expert vous contactera pour une première évaluation."
-  },
-  {
-    question: "Quelle est votre zone d'intervention ?",
-    answer: "Basés à Kinshasa, nous intervenons sur l’ensemble du territoire de la RDC et accompagnons également des projets régionaux."
-  }
-];
-
 export function Contact() {
-  const { contact: siteContact } = useSiteContact();
   const { visibleServices } = useServicePublications();
   const interestDomains = useMemo(
     () => [...visibleServices.map((s) => s.title), "Recrutement"],
@@ -76,7 +41,7 @@ export function Contact() {
         title="Contact" 
         description="Contactez ORBIS PUBLICA pour tout accompagnement, demande de devis ou de partenariat." 
       />
-       <div className="bg-slate-800 py-12 md:py-20 text-white">
+      <PageHeroBanner>
         <div className="container mx-auto px-6 md:px-10">
           <h1 className="text-3xl md:text-5xl font-bold mb-6">Contactez-nous</h1>
           <p className="text-xl text-slate-300 max-w-3xl">
@@ -84,109 +49,12 @@ export function Contact() {
             Nous sommes à votre disposition.
           </p>
         </div>
-      </div>
+      </PageHeroBanner>
 
       <div className="container mx-auto px-6 md:px-10 py-12 md:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          
-          {/* Contact Info & Sidebar */}
-          <div className="lg:col-span-1 space-y-8">
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-              <h3 className="text-xl font-bold text-slate-900 mb-6">Nos Coordonnées</h3>
-              
-              <div className="space-y-6">
-                <div className="flex items-start">
-                  <MapPin className="h-6 w-6 text-blue-600 mr-4 flex-shrink-0 mt-1" />
-                  <div>
-                    <strong className="block text-slate-900 mb-1">Siège social</strong>
-                    <p className="text-slate-600 text-sm">{siteContact.addressLine}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <Phone className="h-6 w-6 text-blue-600 mr-4 flex-shrink-0 mt-1" />
-                  <div>
-                    <strong className="block text-slate-900 mb-1">Téléphone</strong>
-                    {siteContact.phones.map((p) => (
-                      <p key={p.tel} className="text-slate-600 text-sm">
-                        {p.whatsappUrl ? (
-                          <a
-                            href={p.whatsappUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-blue-600"
-                          >
-                            {p.label}
-                          </a>
-                        ) : (
-                          <a href={`tel:${p.tel}`} className="hover:text-blue-600">
-                            {p.label}
-                          </a>
-                        )}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <Mail className="h-6 w-6 text-blue-600 mr-4 flex-shrink-0 mt-1" />
-                  <div>
-                    <strong className="block text-slate-900 mb-1">Email</strong>
-                    {siteContact.emails.map((email) => (
-                      <a
-                        key={email}
-                        href={`mailto:${email}`}
-                        className="text-slate-600 text-sm hover:text-blue-600 block"
-                      >
-                        {email}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <Clock className="h-6 w-6 text-blue-600 mr-4 flex-shrink-0 mt-1" />
-                  <div>
-                    <strong className="block text-slate-900 mb-1">Heures d'ouverture</strong>
-                    <p className="text-slate-600 text-sm">{siteContact.openingHours.weekdays}</p>
-                    <p className="text-slate-600 text-sm">{siteContact.openingHours.saturday}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8 pt-8 border-t border-slate-100">
-                <h4 className="text-sm font-bold text-slate-900 mb-4">Suivez-nous</h4>
-                <div className="flex space-x-4">
-                   <a href="#" className="text-slate-400 hover:text-blue-600"><Linkedin className="h-5 w-5" /></a>
-                   <a href="#" className="text-slate-400 hover:text-blue-600"><Facebook className="h-5 w-5" /></a>
-                   <a href="#" className="text-slate-400 hover:text-blue-600"><Twitter className="h-5 w-5" /></a>
-                   <a href="#" className="text-slate-400 hover:text-blue-600"><Instagram className="h-5 w-5" /></a>
-                   <a href="#" className="text-slate-400 hover:text-blue-600"><Youtube className="h-5 w-5" /></a>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-slate-50 p-8 rounded-xl border border-slate-200">
-              <h3 className="text-xl font-bold text-slate-900 mb-6">FAQ</h3>
-              <Accordion type="single" collapsible className="w-full">
-                {faqs.map((faq, index) => (
-                  <AccordionItem key={index} value={`item-${index}`}>
-                    <AccordionTrigger className="text-left font-medium text-slate-800 hover:text-blue-600 text-sm">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-slate-600 text-sm">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          </div>
-
-          {/* Form */}
-          <div className="lg:col-span-2">
-            <div className="bg-white p-8 md:p-10 rounded-2xl shadow-lg border border-slate-100">
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">Formulaire de Demande</h2>
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white p-8 md:p-10 rounded-2xl shadow-lg border border-slate-100">
+              <h2 className="text-2xl font-bold text-slate-900 mb-2">Prendre Rendez-vous</h2>
               <p className="text-slate-500 mb-8">Veuillez remplir tous les champs obligatoires marqués d'un astérisque (*).</p>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -295,7 +163,6 @@ export function Contact() {
                 </button>
 
               </form>
-            </div>
           </div>
         </div>
       </div>

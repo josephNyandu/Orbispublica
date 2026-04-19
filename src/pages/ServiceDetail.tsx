@@ -1,7 +1,6 @@
 import { useParams, Link, Navigate } from "react-router";
 import { motion } from "motion/react";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
-import { firmPositioningParagraph } from "@/data/siteCopy";
 import { useServicePublications } from "@/hooks/useServicePublications";
 
 export function ServiceDetail() {
@@ -11,12 +10,12 @@ export function ServiceDetail() {
 
   if (slug === "demarches-administratives") {
     return (
-      <Navigate to="/expertises/gouvernance-structuration" replace />
+      <Navigate to="/services/gouvernance-structuration" replace />
     );
   }
 
   if (service && shouldRedirectUnpublished(slug)) {
-    return <Navigate to="/expertises" replace />;
+    return <Navigate to="/services" replace />;
   }
 
   if (!service) {
@@ -27,10 +26,10 @@ export function ServiceDetail() {
             Service non trouvé
           </h2>
           <Link
-            to="/expertises"
+            to="/services"
             className="text-blue-600 hover:underline"
           >
-            Retour aux expertises
+            Retour aux services
           </Link>
         </div>
       </div>
@@ -59,11 +58,11 @@ export function ServiceDetail() {
               transition={{ duration: 0.6 }}
             >
               <Link
-                to="/expertises"
+                to="/services"
                 className="inline-flex items-center text-slate-300 hover:text-blue-500 mb-6 transition-colors group"
               >
                 <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                Retour aux expertises
+                Retour aux services
               </Link>
               <div className="flex items-center mb-4 space-x-4"></div>
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 max-w-4xl">
@@ -94,11 +93,6 @@ export function ServiceDetail() {
                 </h2>
                 <p className="text-slate-600 text-lg leading-relaxed mb-12 whitespace-pre-line">
                   {service.fullDescription}
-                </p>
-
-                <p className="text-slate-600 text-lg leading-relaxed mb-10">
-                  <strong className="text-slate-900">ORBIS PUBLICA</strong>
-                  {firmPositioningParagraph.replace(/^ORBIS PUBLICA/, "")}
                 </p>
 
                 <h3 className="text-2xl font-bold text-slate-900 mb-6">

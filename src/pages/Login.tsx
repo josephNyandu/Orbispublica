@@ -1,9 +1,12 @@
+import { useLayoutEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { Lock, Mail } from "lucide-react";
 import { toast } from "sonner@2.0.3";
 import { login } from "@/lib/api";
 import { AuthPortalTabs } from "@/components/AuthPortalTabs";
+import { PageHeroBanner } from "@/components/PageHeroBanner";
+import { getLoginHref, isExternalLoginConfigured } from "@/lib/loginUrl";
 
 type LoginForm = {
   email: string;
@@ -19,6 +22,15 @@ export function Login() {
     rawRedirect && rawRedirect.startsWith("/") && !rawRedirect.startsWith("//")
       ? rawRedirect
       : "/admin";
+
+  useLayoutEffect(() => {
+    if (!isExternalLoginConfigured()) return;
+    const redirectPath =
+      rawRedirect && rawRedirect.startsWith("/") && !rawRedirect.startsWith("//")
+        ? rawRedirect
+        : undefined;
+    window.location.replace(getLoginHref({ redirectPath }));
+  }, [rawRedirect]);
 
   const {
     register,
@@ -38,9 +50,17 @@ export function Login() {
     }
   };
 
+  if (isExternalLoginConfigured()) {
+    return (
+      <div className="pt-20 flex min-h-[50vh] items-center justify-center px-6 text-slate-600">
+        Redirection vers la page de connexion…
+      </div>
+    );
+  }
+
   return (
     <div className="pt-20">
-      <div className="bg-slate-800 py-16 text-white">
+      <PageHeroBanner className="py-16">
         <div className="container mx-auto px-6 md:px-10">
           <div className="mb-4">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Connexion</h1>
@@ -49,7 +69,7 @@ export function Login() {
             Accédez à l’espace d’administration pour gérer les réalisations publiées sur le site.
           </p>
         </div>
-      </div>
+      </PageHeroBanner>
 
       <div className="container mx-auto px-6 md:px-10 py-16 md:py-20">
         <div className="max-w-md mx-auto">

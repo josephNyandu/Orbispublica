@@ -10,6 +10,7 @@ import {
 import { adminImagePreviewSrc } from "@/lib/adminImage";
 import { isOpportunityCategoryId, type OpportunityCategoryId } from "@/data/opportunityCategories";
 import { formatDeadlineFr } from "@/lib/consultationStatus";
+import { PageHeroBanner } from "@/components/PageHeroBanner";
 
 function formatDateFr(iso: string | null): string {
   if (!iso) return "";
@@ -242,7 +243,7 @@ export function OpportunityPostPublic() {
 
   return (
     <div className={`pt-20 ${showSiblingNav ? "pb-28 md:pb-24" : ""}`}>
-      <div className="bg-slate-800 py-10 md:py-12 text-white">
+      <PageHeroBanner className="py-10 md:py-12">
         <div className="container mx-auto px-6 md:px-10 max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-widest text-blue-400 mb-2">Annonce</p>
           <h1 className="text-3xl md:text-4xl font-bold leading-tight">{post.title}</h1>
@@ -275,7 +276,7 @@ export function OpportunityPostPublic() {
             ) : null}
           </div>
         </div>
-      </div>
+      </PageHeroBanner>
 
       <article className="py-10 md:py-14 bg-white border-b border-slate-100">
         <div className="container mx-auto px-6 md:px-10 max-w-3xl">

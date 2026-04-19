@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { logout } from "@/lib/api";
 import { toast } from "sonner@2.0.3";
+import { getLoginHref, isAbsoluteLoginHref } from "@/lib/loginUrl";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -14,7 +15,12 @@ export default function AdminLayout() {
     try {
       await logout();
       toast.success("Déconnexion réussie");
-      navigate("/login", { replace: true });
+      const href = getLoginHref();
+      if (isAbsoluteLoginHref(href)) {
+        window.location.assign(href);
+      } else {
+        navigate(href, { replace: true });
+      }
     } catch {
       toast.error("Impossible de se déconnecter");
     }

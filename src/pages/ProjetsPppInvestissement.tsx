@@ -1,3 +1,4 @@
+import { PageHeroBanner } from '@/components/PageHeroBanner';
 import { OpportunityPostsSection } from '@/components/OpportunityPostsSection';
 import { OpportuniteRegistreAvertissement } from '@/components/OpportuniteRegistreAvertissement';
 import { OpportuniteSuivantNav } from '@/components/OpportuniteSuivantNav';
@@ -5,7 +6,7 @@ import { OpportuniteSuivantNav } from '@/components/OpportuniteSuivantNav';
 export function ProjetsPppInvestissement() {
   return (
     <div className="pt-20">
-      <div className="bg-slate-800 py-14 md:py-20 text-white">
+      <PageHeroBanner className="py-14 md:py-20">
         <div className="container mx-auto px-4 md:px-6">
           <p className="text-sm font-semibold uppercase tracking-widest text-blue-400 mb-3">
             Opportunités
@@ -17,7 +18,7 @@ export function ProjetsPppInvestissement() {
             dans la base du site et publiées depuis l&apos;espace d&apos;administration.
           </p>
         </div>
-      </div>
+      </PageHeroBanner>
 
       <OpportuniteRegistreAvertissement />
       <OpportunityPostsSection category="projets-ppp-investissement" />
