@@ -147,7 +147,6 @@ export function OpportunitesPublicationAdmin() {
       opportunites: 0,
       "appels-a-projets": 0,
       "financements-subventions": 0,
-      "projets-ppp-investissement": 0,
       "alertes-personnalisees": 0,
     };
     for (const row of items) {

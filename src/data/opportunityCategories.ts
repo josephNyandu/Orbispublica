@@ -6,7 +6,6 @@ export const OPPORTUNITY_CATEGORY_IDS = [
   "opportunites",
   "appels-a-projets",
   "financements-subventions",
-  "projets-ppp-investissement",
   "alertes-personnalisees",
 ] as const;
 
@@ -16,7 +15,6 @@ export const OPPORTUNITY_CATEGORY_LABELS: Record<OpportunityCategoryId, string> 
   opportunites: "Appels d'offres",
   "appels-a-projets": "Appels à projets",
   "financements-subventions": "Financements & subventions",
-  "projets-ppp-investissement": "Projets PPP / investissement",
   "alertes-personnalisees": "Autres opportunités stratégiques",
 };
 
@@ -24,7 +22,6 @@ export const OPPORTUNITY_CATEGORY_PUBLIC_PATH: Record<OpportunityCategoryId, str
   opportunites: "/opportunites",
   "appels-a-projets": "/appels-a-projets",
   "financements-subventions": "/financements-subventions",
-  "projets-ppp-investissement": "/projets-ppp-investissement",
   "alertes-personnalisees": "/alertes-personnalisees",
 };
 
@@ -36,6 +33,7 @@ export function isOpportunityCategoryId(v: string): v is OpportunityCategoryId {
 export function opportunityCategoryLabelForDisplay(cat: string): string {
   if (isOpportunityCategoryId(cat)) return OPPORTUNITY_CATEGORY_LABELS[cat];
   if (cat === "appels-offres") return OPPORTUNITY_CATEGORY_LABELS.opportunites;
+  if (cat === "projets-ppp-investissement") return "Projets PPP / investissement (archivé)";
   return cat.trim() ? cat : "—";
 }
 
@@ -43,6 +41,7 @@ export function opportunityCategoryLabelForDisplay(cat: string): string {
 export function opportunityCategoryPathForDisplay(cat: string): string | null {
   if (isOpportunityCategoryId(cat)) return OPPORTUNITY_CATEGORY_PUBLIC_PATH[cat];
   if (cat === "appels-offres") return OPPORTUNITY_CATEGORY_PUBLIC_PATH.opportunites;
+  if (cat === "projets-ppp-investissement") return "/opportunites/ppp";
   return null;
 }
 

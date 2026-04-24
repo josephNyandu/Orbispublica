@@ -47,7 +47,7 @@ export function opportunityCategoryHref(category) {
     opportunites: "/opportunites",
     "appels-a-projets": "/appels-a-projets",
     "financements-subventions": "/financements-subventions",
-    "projets-ppp-investissement": "/projets-ppp-investissement",
+    "projets-ppp-investissement": "/opportunites/ppp",
     "alertes-personnalisees": "/alertes-personnalisees",
     "appels-offres": "/opportunites",
   };

@@ -1,7 +1,7 @@
-import image_ea0b07bc72677584fad20b1d1df330c87fd242ce from 'figma:asset/ea0b07bc72677584fad20b1d1df330c87fd242ce.png';
+import strategicMeetingImage from '../assets/image.jpg';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router';
-import { ArrowRight, CheckCircle2, Building2, Users, Trophy, Globe2, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useServicePublications } from '@/hooks/useServicePublications';
 import { SEO } from '@/components/SEO';
@@ -99,81 +99,126 @@ export function Home() {
         </div>
       </section>
 
-      {/* Introduction Section */}
-      <section className="py-16 md:py-24 bg-white relative">
-        <div className="container mx-auto px-6 md:px-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <motion.div 
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h4 className="text-blue-600 font-bold uppercase tracking-widest text-sm mb-4">À Propos d'Orbis Publica</h4>
-              <h2 className="text-3xl md:text-5xl font-bold text-primary mb-8 leading-tight">
-                Un partenaire stratégique pour les projets de développement en rdc
-              </h2>
-              
-              <div className="prose prose-lg text-slate-600 mb-8">
-                <p>
-                 Dans un contexte marqué par une exigence croissante de transparence et de performance, ORBIS PUBLICA accompagne les acteurs publics et privés dans la structuration, la sécurisation et la mise en œuvre efficace de projets en partenariats public-privé (ppp), marchés publics et projets de développement.
-                </p>
-                <p>
-               Nous transformons les défis réglementaires et administratifs en opportunités stratégiques, dans une approche orientée conformité, performance et résultats.
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-                {[
-                  "Expertise locale éprouvée",
-                  "Réseau institutionnel",
-                  "Standards internationaux",
-                  "Approche sur-mesure"
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 transition-colors">
-                    
-                    <span className="text-primary/90 font-semibold">{item}</span>
-                  </div>
-                ))}
-              </div>
+      {/* Introduction Section — éditorial institutionnel */}
+      <section className="relative overflow-hidden bg-white py-20 md:py-28">
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_70%_at_0%_-10%,rgba(0,163,224,0.07),transparent_55%),linear-gradient(180deg,rgb(248_250_252)_0%,#fff_38%)]"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"
+          aria-hidden
+        />
 
-              <div className="mt-10">
-                <Link to="/notre-cabinet" className="inline-flex items-center text-primary font-bold hover:text-blue-600 transition-colors">
-                  En savoir plus sur notre cabinet <ChevronRight className="ml-2 h-4 w-4" />
-                </Link>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, x: 30 }}
+        <div className="container relative mx-auto px-6 md:px-10">
+          <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-16 xl:gap-24">
+            <motion.div
+              initial={{ opacity: 0, x: -28 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
               className="relative"
             >
-              <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-transparent rounded-2xl transform translate-x-4 translate-y-4"></div>
-              <img 
-                src={image_ea0b07bc72677584fad20b1d1df330c87fd242ce} 
-                alt="Réunion stratégique" 
-                className="relative rounded-2xl shadow-2xl w-full h-[500px] object-cover"
+              <p className="mb-5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-500">
+                <span className="text-secondary">À propos</span>
+                <span className="mx-2.5 text-slate-300">·</span>
+                <span className="text-primary">Orbis Publica</span>
+              </p>
+
+              <h2 className="mb-8 max-w-xl text-3xl font-bold leading-tight tracking-tight text-primary md:text-4xl lg:text-5xl">
+                Un partenaire stratégique pour les projets de développement en{' '}
+                <span className="text-secondary">RDC</span>
+              </h2>
+
+              <div className="max-w-xl space-y-6">
+                <p className="border-l-[3px] border-secondary/70 pl-5 text-lg font-medium leading-relaxed text-slate-800 md:text-xl">
+                  Dans un contexte marqué par une exigence croissante de transparence et de performance, ORBIS
+                  PUBLICA accompagne les acteurs publics et privés dans la structuration, la sécurisation et la mise
+                  en œuvre efficace de projets en partenariats public-privé (PPP), marchés publics et projets de
+                  développement.
+                </p>
+                <p className="text-base leading-relaxed text-slate-600 md:text-[1.05rem]">
+                  Nous transformons les défis réglementaires et administratifs en opportunités stratégiques, dans
+                  une approche orientée conformité, performance et résultats.
+                </p>
+              </div>
+
+              <ul className="mt-10 grid gap-3 sm:grid-cols-2">
+                {[
+                  'Expertise locale éprouvée',
+                  'Réseau institutionnel',
+                  'Standards internationaux',
+                  'Approche sur-mesure',
+                ].map((item, idx) => (
+                  <motion.li
+                    key={item}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.08 * idx, duration: 0.45 }}
+                    className="flex gap-3 rounded-xl border border-slate-200/90 bg-slate-50/60 p-4 shadow-sm shadow-slate-200/40 transition-[border-color,box-shadow,background-color] duration-300 hover:border-secondary/35 hover:bg-white hover:shadow-md"
+                  >
+                    <CheckCircle2
+                      className="mt-0.5 h-5 w-5 shrink-0 text-secondary"
+                      strokeWidth={2}
+                      aria-hidden
+                    />
+                    <span className="text-sm font-semibold leading-snug text-primary">{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+
+              <Link
+                to="/notre-cabinet"
+                className="group mt-10 inline-flex items-center gap-2 rounded-lg bg-primary px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-primary/25 transition-[background-color,box-shadow,transform] hover:bg-blue-800 hover:shadow-xl hover:shadow-primary/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              >
+                Notre cabinet
+                <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 28 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+              className="relative lg:pl-4"
+            >
+              <div
+                className="pointer-events-none absolute -right-6 -top-8 h-40 w-40 rounded-full bg-secondary/20 blur-3xl"
+                aria-hidden
               />
-              
-              {/* Floating Stat Card */}
-              <motion.div 
-                initial={{ y: 20, opacity: 0 }}
+              <div
+                className="pointer-events-none absolute -bottom-4 right-8 h-48 w-48 rounded-full bg-primary/10 blur-3xl"
+                aria-hidden
+              />
+
+              <div className="relative rounded-2xl border border-slate-200/80 bg-gradient-to-br from-slate-100 to-slate-50/80 p-2 shadow-inner">
+                <div className="absolute inset-2 rounded-xl bg-gradient-to-tr from-secondary/15 via-transparent to-transparent opacity-80" aria-hidden />
+                <img
+                  src={strategicMeetingImage}
+                  alt="Réunion stratégique"
+                  className="relative z-10 aspect-[4/5] w-full max-h-[min(32rem,70vh)] rounded-xl object-cover shadow-xl ring-1 ring-slate-900/5"
+                />
+              </div>
+
+              <motion.div
+                initial={{ y: 24, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
-                className="absolute -bottom-8 -left-8 bg-white p-6 rounded-xl shadow-xl border border-slate-100 max-w-xs"
+                transition={{ delay: 0.35, duration: 0.55 }}
+                className="absolute -bottom-6 left-2 right-auto z-20 max-w-[18rem] rounded-xl border border-slate-200/90 bg-white/95 p-5 shadow-2xl shadow-slate-900/10 backdrop-blur-sm sm:-bottom-8 sm:-left-6 md:left-0"
               >
-                <div className="flex items-center space-x-4 mb-2">
-                  
-                  <div>
-                    <p className="text-slate-500 text-xs uppercase font-bold tracking-wider">Projets Accompagnés</p>
-                    <p className="text-3xl font-bold text-primary">+50</p>
-                  </div>
-                </div>
-                <p className="text-sm text-slate-600 italic">"L'excellence au service du bien commun"</p>
+                <div className="mb-3 h-px w-12 rounded-full bg-gradient-to-r from-secondary to-primary" aria-hidden />
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-slate-500">
+                  Projets accompagnés
+                </p>
+                <p className="mt-1 text-4xl font-bold tabular-nums text-primary">
+                  +50
+                </p>
+                <p className="mt-3 border-t border-slate-100 pt-3 text-sm italic leading-snug text-slate-600">
+                  « L&apos;excellence au service du bien commun »
+                </p>
               </motion.div>
             </motion.div>
           </div>
@@ -242,48 +287,6 @@ export function Home() {
             >
               VOIR TOUS NOS SERVICES
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section with Parallax Look */}
-      <section className="relative py-20 md:py-32 bg-primary fixed-bg overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-             src="https://images.unsplash.com/photo-1761437855740-c894da924d79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
-             alt="Background" 
-             className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary via-transparent to-primary"></div>
-        </div>
-
-        <div className="container mx-auto px-6 md:px-10 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
-            {[
-              { icon: CheckCircle2, value: "100%", label: "Conformité" },
-              { icon: Users, value: "+50", label: "Experts" },
-              { icon: Trophy, value: "10+", label: "Années" },
-              { icon: Globe2, value: "24/7", label: "Support" }
-            ].map((stat, index) => (
-              <motion.div 
-                key={index}
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, type: "spring", stiffness: 100 }}
-                className="flex flex-col items-center"
-              >
-                <div className="mb-6 p-4 bg-white/5 rounded-full border border-white/10 text-blue-500">
-                  <stat.icon className="w-8 h-8" />
-                </div>
-                <div className="text-5xl md:text-6xl font-bold text-white mb-2 tracking-tight">
-                  {stat.value}
-                </div>
-                <div className="text-sm font-medium text-slate-400 uppercase tracking-widest">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>
