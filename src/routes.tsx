@@ -11,10 +11,10 @@ import { Expertises } from "./pages/Expertises";
 import { ServiceDetail } from "./pages/ServiceDetail";
 import { Portfolio } from "./pages/Portfolio";
 import { Partners } from "./pages/Partners";
+import { OpportunitesSegmentPage } from "./pages/OpportunitesSegmentPage";
 import { OpportunityPostPublic } from "./pages/OpportunityPostPublic";
 import { AppelsProjets } from "./pages/AppelsProjets";
 import { FinancementsSubventions } from "./pages/FinancementsSubventions";
-import { ProjetsPppInvestissement } from "./pages/ProjetsPppInvestissement";
 import { AlertesPersonnalises } from "./pages/AlertesPersonnalises";
 import { Blog } from "./pages/Blog";
 import PublicationsLayout from "./layouts/PublicationsLayout";
@@ -117,9 +117,11 @@ export const router = createBrowserRouter([
       { path: "nos-realisations", Component: Portfolio },
       { path: "opportunite/:postId", Component: OpportunityPostPublic },
       { path: "opportunites", Component: Partners },
+      { path: "opportunites/ppp", element: <OpportunitesSegmentPage segment="ppp" /> },
+      { path: "opportunites/marches-publics", element: <OpportunitesSegmentPage segment="marches-publics" /> },
       { path: "appels-a-projets", Component: AppelsProjets },
       { path: "financements-subventions", Component: FinancementsSubventions },
-      { path: "projets-ppp-investissement", Component: ProjetsPppInvestissement },
+      { path: "projets-ppp-investissement", element: <Navigate to="/opportunites/ppp" replace /> },
       { path: "alertes-personnalisees", Component: AlertesPersonnalises },
       { path: "nos-partenaires", element: <Navigate to="/opportunites" replace /> },
       { path: "blog", Component: Blog },

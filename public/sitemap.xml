@@ -41,7 +41,12 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://orbispublica.com/projets-ppp-investissement</loc>
+    <loc>https://orbispublica.com/opportunites/ppp</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://orbispublica.com/opportunites/marches-publics</loc>
     <priority>0.7</priority>
     <changefreq>weekly</changefreq>
   </url>

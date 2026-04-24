@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { ArrowLeft, Loader2, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner@2.0.3";
 import { fetchAdminSiteContact, updateAdminSiteContact, type SiteContact } from "@/lib/api";
@@ -10,20 +10,32 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { AdminInfoTooltip } from "@/components/admin/AdminInfoTooltip";
+import { Checkbox } from "@/components/ui/checkbox";
 
 /** `useFieldArray` exige des objets par ligne pour les e-mails. */
 type ContactFormValues = Omit<SiteContact, "emails"> & { emails: { value: string }[] };
 
+const CLOSED_SATURDAY = "Samedi : fermé";
+
 function toFormValues(data: SiteContact): ContactFormValues {
+  const saturdayOpen = data.openingHours.saturdayOpen !== false;
   return {
     addressLine: data.addressLine,
     phones: data.phones.map((p) => ({
       label: p.label,
       tel: p.tel,
       whatsappUrl: p.whatsappUrl ?? "",
+      whatsappUrlOpen:
+        p.whatsappUrlOpen !== undefined
+          ? p.whatsappUrlOpen !== false
+          : Boolean((p.whatsappUrl ?? "").trim()),
     })),
     emails: data.emails.map((value) => ({ value })),
-    openingHours: { ...data.openingHours },
+    openingHours: {
+      ...data.openingHours,
+      saturday: data.openingHours.saturday,
+      saturdayOpen,
+    },
     navbar: { ...data.navbar },
   };
 }
@@ -31,6 +43,8 @@ function toFormValues(data: SiteContact): ContactFormValues {
 export function ContactInfoAdmin() {
   const [pageLoading, setPageLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  /** Dernier texte samedi personnalisé pour restauration quand on réactive l’ouverture. */
+  const lastSaturdayTextRef = useRef(siteContactDefaults.openingHours.saturday);
 
   const form = useForm<ContactFormValues>({
     defaultValues: toFormValues(siteContactDefaults),
@@ -46,12 +60,20 @@ export function ContactInfoAdmin() {
     name: "emails",
   });
 
+  const phonesWatched = useWatch({ control: form.control, name: "phones" });
+
   const load = useCallback(async () => {
     setPageLoading(true);
     setLoadError(null);
     try {
       const data = await fetchAdminSiteContact();
-      form.reset(toFormValues(data));
+      const fv = toFormValues(data);
+      form.reset(fv);
+      if (fv.openingHours.saturdayOpen) {
+        lastSaturdayTextRef.current = fv.openingHours.saturday;
+      } else {
+        lastSaturdayTextRef.current = siteContactDefaults.openingHours.saturday;
+      }
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Chargement impossible";
       setLoadError(msg);
@@ -72,12 +94,19 @@ export function ContactInfoAdmin() {
       phones: values.phones.map((p) => {
         const wa = (p.whatsappUrl ?? "").trim();
         const base = { label: p.label.trim(), tel: p.tel.trim().replace(/\s/g, "") };
-        return wa ? { ...base, whatsappUrl: wa } : base;
+        const open = p.whatsappUrlOpen !== false;
+        if (wa) {
+          return { ...base, whatsappUrl: wa, whatsappUrlOpen: open };
+        }
+        return { ...base, whatsappUrlOpen: open };
       }),
       emails: values.emails.map((e) => e.value.trim()).filter(Boolean),
       openingHours: {
         weekdays: values.openingHours.weekdays.trim(),
-        saturday: values.openingHours.saturday.trim(),
+        saturday: values.openingHours.saturdayOpen
+          ? values.openingHours.saturday.trim()
+          : CLOSED_SATURDAY,
+        saturdayOpen: values.openingHours.saturdayOpen,
       },
       navbar: {
         email: values.navbar.email.trim(),
@@ -161,7 +190,7 @@ export function ContactInfoAdmin() {
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => appendPhone({ label: "", tel: "", whatsappUrl: "" })}
+              onClick={() => appendPhone({ label: "", tel: "", whatsappUrl: "", whatsappUrlOpen: false })}
             >
               <Plus className="size-4" />
               Ligne
@@ -191,12 +220,35 @@ export function ContactInfoAdmin() {
                   </div>
                   <Input id={`phone-tel-${index}`} {...form.register(`phones.${index}.tel` as const)} />
                 </div>
-                <div className="min-w-0 flex-[2] space-y-1.5 sm:basis-full">
-                  <div className="flex items-center gap-1.5">
-                    <Label htmlFor={`phone-wa-${index}`}>URL WhatsApp (optionnel)</Label>
-                    <AdminInfoTooltip text="Si renseigné, le site propose ce lien à la place du numéro cliquable tel:." />
+                <div className="min-w-0 flex-[2] space-y-3 sm:basis-full">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Label htmlFor={`phone-wa-${index}`}>URL WhatsApp (optionnel)</Label>
+                      <AdminInfoTooltip text="Si activé et renseigné, le site propose ce lien à la place du numéro cliquable tel:." />
+                    </div>
+                    <Controller
+                      name={`phones.${index}.whatsappUrlOpen`}
+                      control={form.control}
+                      render={({ field }) => (
+                        <label
+                          htmlFor={`phone-wa-open-${index}`}
+                          className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+                        >
+                          <Checkbox
+                            id={`phone-wa-open-${index}`}
+                            checked={field.value}
+                            onCheckedChange={(c) => field.onChange(c === true)}
+                          />
+                          <span>Utiliser le lien WhatsApp</span>
+                        </label>
+                      )}
+                    />
                   </div>
-                  <Input id={`phone-wa-${index}`} {...form.register(`phones.${index}.whatsappUrl` as const)} />
+                  <Input
+                    id={`phone-wa-${index}`}
+                    disabled={!phonesWatched?.[index]?.whatsappUrlOpen}
+                    {...form.register(`phones.${index}.whatsappUrl` as const)}
+                  />
                 </div>
                 {phoneFields.length > 1 ? (
                   <Button
@@ -265,12 +317,49 @@ export function ContactInfoAdmin() {
             </div>
             <Input id="oh-week" {...form.register("openingHours.weekdays")} />
           </div>
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-1.5">
-              <Label htmlFor="oh-sat">Samedi</Label>
-              <AdminInfoTooltip text="Horaires du samedi ou mention « fermé » si besoin." />
+          <div className="space-y-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-1.5">
+                <Label htmlFor="oh-sat">Samedi</Label>
+                <AdminInfoTooltip text="Décochez pour masquer toute la ligne samedi sur le site (pas d’ouverture ce jour-là)." />
+              </div>
+              <Controller
+                name="openingHours.saturdayOpen"
+                control={form.control}
+                render={({ field }) => (
+                  <label
+                    htmlFor="oh-sat-open"
+                    className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+                  >
+                    <Checkbox
+                      id="oh-sat-open"
+                      checked={field.value}
+                      onCheckedChange={(c) => {
+                        const on = c === true;
+                        const current = form.getValues("openingHours.saturday");
+                        if (!on) {
+                          if (current.trim() && current !== CLOSED_SATURDAY) {
+                            lastSaturdayTextRef.current = current;
+                          }
+                          form.setValue("openingHours.saturday", CLOSED_SATURDAY, { shouldDirty: true });
+                        } else {
+                          form.setValue("openingHours.saturday", lastSaturdayTextRef.current, {
+                            shouldDirty: true,
+                          });
+                        }
+                        field.onChange(on);
+                      }}
+                    />
+                    <span>Ouverture le samedi</span>
+                  </label>
+                )}
+              />
             </div>
-            <Input id="oh-sat" {...form.register("openingHours.saturday")} />
+            <Input
+              id="oh-sat"
+              disabled={!form.watch("openingHours.saturdayOpen")}
+              {...form.register("openingHours.saturday")}
+            />
           </div>
         </section>
 

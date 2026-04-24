@@ -4,7 +4,6 @@ export const OPPORTUNITY_CATEGORIES = [
   "opportunites",
   "appels-a-projets",
   "financements-subventions",
-  "projets-ppp-investissement",
   "alertes-personnalisees",
 ];
 

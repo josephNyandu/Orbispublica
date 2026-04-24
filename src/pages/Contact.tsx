@@ -13,7 +13,7 @@ type FormData = {
   position: string;
   city: string;
   requestType: string;
-  domains: string[];
+  domain: string;
   message: string;
   contactMethod: string;
   language: string;
@@ -24,7 +24,7 @@ type FormData = {
 export function Contact() {
   const { visibleServices } = useServicePublications();
   const interestDomains = useMemo(
-    () => [...visibleServices.map((s) => s.title), "Recrutement"],
+    () => visibleServices.map((s) => s.title),
     [visibleServices]
   );
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
@@ -69,7 +69,7 @@ export function Contact() {
                       {errors.fullName && <span className="text-red-500 text-xs">Requis</span>}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Email Professionnel *</label>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Adresse mail *</label>
                       <input type="email" {...register("email", { required: true })} className="w-full px-4 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
                       {errors.email && <span className="text-red-500 text-xs">Requis</span>}
                     </div>
@@ -111,24 +111,24 @@ export function Contact() {
                 {/* Domains */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">3. Domaines concernés</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {interestDomains.map((domain) => (
-                      <label key={domain} className="flex items-center space-x-2 text-sm text-slate-700">
-                        <input type="checkbox" value={domain} {...register("domains")} className="rounded text-blue-600 focus:ring-blue-500" />
-                        <span>{domain}</span>
-                      </label>
+                  <select {...register("domain")} className="w-full px-4 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-blue-500">
+                    <option value="">Sélectionnez un domaine...</option>
+                    {interestDomains.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
                     ))}
-                  </div>
+                  </select>
                 </div>
 
                 {/* Details */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">4. Détails de la demande *</h3>
+                  <h3 className="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">4. Informations complémentaires</h3>
                   <textarea 
-                    {...register("message", { required: true })} 
+                    {...register("message")} 
                     rows={6} 
                     className="w-full px-4 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Décrivez votre besoin ici..."
+                    placeholder="Précisez votre besoin ou toute information utile (facultatif)…"
                   ></textarea>
                   
                   <div className="flex flex-col space-y-2">

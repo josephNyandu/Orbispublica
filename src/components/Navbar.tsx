@@ -1,6 +1,20 @@
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useState, useEffect } from 'react';
-import { Menu, X, Globe, Mail, Phone, Facebook, Twitter, Linkedin, Youtube, Instagram, Search, ChevronDown } from 'lucide-react';
+import {
+  Menu,
+  X,
+  Globe,
+  Mail,
+  Phone,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Youtube,
+  Instagram,
+  Search,
+  ChevronDown,
+  ChevronRight,
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSiteContact } from '@/hooks/useSiteContact';
 import { BrandLogoLink } from '@/components/BrandLogo';
@@ -9,12 +23,25 @@ import { publicationsNavLinks } from '@/data/publicationsNav';
 import { getLoginHref, isAbsoluteLoginHref } from '@/lib/loginUrl';
 
 const opportunitesSubLinks = [
-  { name: "Appels d'offres", path: '/opportunites' },
+  {
+    name: "Appels d'offres",
+    path: '/opportunites',
+    nested: [
+      { name: 'PPP', path: '/opportunites/ppp' },
+      { name: 'Marchés publics', path: '/opportunites/marches-publics' },
+    ],
+  },
   { name: 'Appels à projets', path: '/appels-a-projets' },
   { name: 'Financements & subventions', path: '/financements-subventions' },
-  { name: 'Projets PPP / investissement', path: '/projets-ppp-investissement' },
   { name: 'Autres opportunités stratégiques', path: '/alertes-personnalisees' },
 ] as const;
+
+function isOpportuniteSubLinkActive(pathname: string, item: (typeof opportunitesSubLinks)[number]): boolean {
+  if ('nested' in item) {
+    return pathname === item.path || item.nested.some((n) => n.path === pathname);
+  }
+  return pathname === item.path;
+}
 
 export function Navbar() {
   const { contact: siteContact } = useSiteContact();
@@ -54,7 +81,7 @@ export function Navbar() {
   const isServicesActive =
     location.pathname === '/services' || location.pathname.startsWith('/services/');
 
-  const isOpportunitesActive = opportunitesSubLinks.some((s) => s.path === location.pathname);
+  const isOpportunitesActive = opportunitesSubLinks.some((s) => isOpportuniteSubLinkActive(location.pathname, s));
   const isPublicationsActive = location.pathname.startsWith('/publications');
   const loginHref = getLoginHref();
   const isAuthPortal = location.pathname === '/login' || location.pathname === '/registre';
@@ -162,7 +189,7 @@ export function Navbar() {
                   role="menu"
                   aria-label="Sous-menu Cabinet"
                 >
-                  <div className="rounded-lg border border-slate-200 bg-white py-2 shadow-xl">
+                  <div className="rounded-lg border border-slate-200 bg-white py-2">
                     {cabinetNavLinks.map((sublink) => (
                       <Link
                         key={sublink.path}
@@ -207,19 +234,66 @@ export function Navbar() {
                   role="menu"
                   aria-label="Sous-menu Opportunités"
                 >
-                  <div className="rounded-lg border border-slate-200 bg-white py-2 shadow-xl">
-                    {opportunitesSubLinks.map((sublink) => (
-                      <Link
-                        key={sublink.path}
-                        to={sublink.path}
-                        role="menuitem"
-                        className={`block px-4 py-2.5 text-sm transition-colors hover:bg-slate-100 hover:text-blue-700 ${
-                          location.pathname === sublink.path ? 'text-blue-700 bg-blue-50' : 'text-slate-700'
-                        }`}
-                      >
-                        {sublink.name}
-                      </Link>
-                    ))}
+                  <div className="overflow-visible rounded-lg border border-slate-200 bg-white py-2">
+                    {opportunitesSubLinks.map((sublink) =>
+                      'nested' in sublink ? (
+                        (() => {
+                          const selfActive = location.pathname === sublink.path;
+                          const childActive = sublink.nested.some((n) => n.path === location.pathname);
+                          const rowState = selfActive
+                            ? 'bg-blue-50 text-blue-700'
+                            : childActive
+                              ? 'bg-slate-50 text-slate-800'
+                              : 'text-slate-700';
+                          return (
+                        <div key={sublink.path} className="group/ao relative">
+                          <Link
+                            to={sublink.path}
+                            role="menuitem"
+                            className={`flex items-center justify-between gap-2 px-4 py-2.5 text-sm transition-colors hover:bg-slate-100 hover:text-blue-700 ${rowState}`}
+                          >
+                            {sublink.name}
+                            <ChevronRight
+                              className="h-4 w-4 shrink-0 text-slate-400 transition-transform group-hover/ao:translate-x-0.5"
+                              aria-hidden
+                            />
+                          </Link>
+                          <div
+                            className="invisible absolute left-full top-0 z-[60] -ml-px opacity-0 transition-all duration-150 group-hover/ao:visible group-hover/ao:opacity-100 group-focus-within/ao:visible group-focus-within/ao:opacity-100"
+                            role="menu"
+                            aria-label="Sous-menu Appels d'offres"
+                          >
+                            <div className="min-w-[220px] rounded-r-lg border border-slate-200 border-l-0 bg-white py-2">
+                              {sublink.nested.map((n) => (
+                                <Link
+                                  key={n.path}
+                                  to={n.path}
+                                  role="menuitem"
+                                  className={`block px-4 py-2.5 text-sm transition-colors hover:bg-slate-100 hover:text-blue-700 ${
+                                    location.pathname === n.path ? 'bg-blue-50 text-blue-700' : 'text-slate-700'
+                                  }`}
+                                >
+                                  {n.name}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                          );
+                        })()
+                      ) : (
+                        <Link
+                          key={sublink.path}
+                          to={sublink.path}
+                          role="menuitem"
+                          className={`block px-4 py-2.5 text-sm transition-colors hover:bg-slate-100 hover:text-blue-700 ${
+                            location.pathname === sublink.path ? 'text-blue-700 bg-blue-50' : 'text-slate-700'
+                          }`}
+                        >
+                          {sublink.name}
+                        </Link>
+                      )
+                    )}
                   </div>
                 </div>
               </div>
@@ -241,7 +315,7 @@ export function Navbar() {
                   role="menu"
                   aria-label="Sous-menu Publications"
                 >
-                  <div className="rounded-lg border border-slate-200 bg-white py-2 shadow-xl">
+                  <div className="rounded-lg border border-slate-200 bg-white py-2">
                     {publicationsNavLinks.map((sublink) => (
                       <Link
                         key={sublink.path}
@@ -390,22 +464,57 @@ export function Navbar() {
                   />
                 </button>
                 {opportunitesExpanded && (
-                  <div className="mt-2 flex flex-col gap-1 border-l-2 border-slate-400 pl-4">
-                    {opportunitesSubLinks.map((sublink) => (
-                      <Link
-                        key={sublink.path}
-                        to={sublink.path}
-                        onClick={() => {
-                          setIsOpen(false);
-                          setOpportunitesExpanded(false);
-                        }}
-                        className={`py-2 text-sm ${
-                          location.pathname === sublink.path ? 'text-blue-700' : 'text-slate-600'
-                        }`}
-                      >
-                        {sublink.name}
-                      </Link>
-                    ))}
+                  <div className="mt-2 flex flex-col gap-0 border-l-2 border-slate-400 pl-4">
+                    {opportunitesSubLinks.map((sublink) => {
+                      const closeMenu = () => {
+                        setIsOpen(false);
+                        setOpportunitesExpanded(false);
+                      };
+                      if ('nested' in sublink) {
+                        return (
+                          <div
+                            key={sublink.path}
+                            className="overflow-hidden rounded-lg border border-slate-200 bg-white"
+                          >
+                            <Link
+                              to={sublink.path}
+                              onClick={closeMenu}
+                              className={`block border-b border-slate-100 px-3 py-2.5 text-sm font-medium ${
+                                location.pathname === sublink.path ? 'text-blue-700' : 'text-slate-800'
+                              }`}
+                            >
+                              {sublink.name}
+                            </Link>
+                            <div className="p-1.5" role="menu" aria-label="Sous-menu Appels d'offres">
+                              {sublink.nested.map((n) => (
+                                <Link
+                                  key={n.path}
+                                  to={n.path}
+                                  onClick={closeMenu}
+                                  className={`block rounded-md px-2.5 py-2 text-sm ${
+                                    location.pathname === n.path ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50'
+                                  }`}
+                                >
+                                  {n.name}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      }
+                      return (
+                        <Link
+                          key={sublink.path}
+                          to={sublink.path}
+                          onClick={closeMenu}
+                          className={`py-2 text-sm ${
+                            location.pathname === sublink.path ? 'text-blue-700' : 'text-slate-600'
+                          }`}
+                        >
+                          {sublink.name}
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>

@@ -122,6 +122,17 @@ export function initDb() {
     /* ignore */
   }
 
+  /** Ancienne rubrique « projets-ppp-investissement » (page supprimée) → mêmes annonces qu’appels d’offres */
+  try {
+    dbSingleton
+      .prepare(
+        `UPDATE opportunity_posts SET category = 'opportunites' WHERE category = 'projets-ppp-investissement'`
+      )
+      .run();
+  } catch {
+    /* ignore */
+  }
+
   const oppPostCols = dbSingleton.prepare(`PRAGMA table_info(opportunity_posts)`).all();
   if (!oppPostCols.some((c) => c.name === "image_url")) {
     dbSingleton.exec(`ALTER TABLE opportunity_posts ADD COLUMN image_url TEXT`);
@@ -583,7 +594,7 @@ Gouvernance locale, MRV, partage des bénéfices.`,
     },
   ]);
 
-  seedOpportunityDemoCategory("projets-ppp-investissement", "Démo — PPP autoroute urbaine", [
+  seedOpportunityDemoCategory("opportunites", "Démo — PPP autoroute urbaine et péages", [
     {
       title: "Démo — PPP autoroute urbaine et péages",
       summary: "Structuration DBFOM, partage de trafic et risques trafic/revenus (fictif).",

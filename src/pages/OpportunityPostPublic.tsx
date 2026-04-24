@@ -25,7 +25,7 @@ function formatDateFr(iso: string | null): string {
 
 function categoryIdForPublicList(cat: string): OpportunityCategoryId {
   if (isOpportunityCategoryId(cat)) return cat;
-  if (cat === "appels-offres") return "opportunites";
+  if (cat === "appels-offres" || cat === "projets-ppp-investissement") return "opportunites";
   return "opportunites";
 }
 
