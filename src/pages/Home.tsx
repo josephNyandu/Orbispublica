@@ -1,4 +1,4 @@
-import strategicMeetingImage from '../assets/image.jpg';
+import avocatsEnLigneImage from '../assets/avocats-en-ligne-une-solution-rapide-efficace-pour-les-particuliers-et-les-professionnels.jpg';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router';
 import { ArrowRight, ChevronRight, CheckCircle2 } from 'lucide-react';
@@ -195,8 +195,8 @@ export function Home() {
               <div className="relative rounded-2xl border border-slate-200/80 bg-gradient-to-br from-slate-100 to-slate-50/80 p-2 shadow-inner">
                 <div className="absolute inset-2 rounded-xl bg-gradient-to-tr from-secondary/15 via-transparent to-transparent opacity-80" aria-hidden />
                 <img
-                  src={strategicMeetingImage}
-                  alt="Réunion stratégique"
+                  src={avocatsEnLigneImage}
+                  alt="Avocats en ligne, solution rapide et efficace pour particuliers et professionnels"
                   className="relative z-10 aspect-[4/5] w-full max-h-[min(32rem,70vh)] rounded-xl object-cover shadow-xl ring-1 ring-slate-900/5"
                 />
               </div>
