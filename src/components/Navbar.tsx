@@ -22,6 +22,10 @@ import { cabinetNavLinks } from '@/data/cabinetNav';
 import { publicationsNavLinks } from '@/data/publicationsNav';
 import { getLoginHref, isAbsoluteLoginHref } from '@/lib/loginUrl';
 
+/** Page Facebook officielle ORBIS Publica (Kinshasa). */
+const FACEBOOK_PAGE_URL =
+  'https://www.facebook.com/share/1DqW29w8fH/?mibextid=wwXIfr';
+
 const opportunitesSubLinks = [
   {
     name: "Appels d'offres",
@@ -116,7 +120,15 @@ export function Navbar() {
 
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3 border-r border-slate-600 pr-4 mr-1">
-              <a href="#" className="hover:text-white transition-colors"><Facebook className="h-3.5 w-3.5" /></a>
+              <a
+                href={FACEBOOK_PAGE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+                aria-label="ORBIS Publica sur Facebook"
+              >
+                <Facebook className="h-3.5 w-3.5" />
+              </a>
               <a href="#" className="hover:text-white transition-colors"><Twitter className="h-3.5 w-3.5" /></a>
               <a href="#" className="hover:text-white transition-colors"><Youtube className="h-3.5 w-3.5" /></a>
               <a href="#" className="hover:text-white transition-colors"><Linkedin className="h-3.5 w-3.5" /></a>
