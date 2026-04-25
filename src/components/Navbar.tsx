@@ -3,14 +3,11 @@ import { useState, useEffect } from 'react';
 import {
   Menu,
   X,
-  Globe,
   Mail,
   Phone,
   Facebook,
   Twitter,
   Linkedin,
-  Youtube,
-  Instagram,
   Search,
   ChevronDown,
   ChevronRight,
@@ -21,6 +18,19 @@ import { BrandLogoLink } from '@/components/BrandLogo';
 import { cabinetNavLinks } from '@/data/cabinetNav';
 import { publicationsNavLinks } from '@/data/publicationsNav';
 import { getLoginHref, isAbsoluteLoginHref } from '@/lib/loginUrl';
+
+/** Page Facebook officielle ORBIS Publica (Kinshasa). */
+const FACEBOOK_PAGE_URL =
+  'https://www.facebook.com/share/1DqW29w8fH/?mibextid=wwXIfr';
+
+/** Compte X (Twitter) officiel ORBIS Publica. */
+const X_PROFILE_URL = 'https://x.com/orbispublica?s=21';
+
+/**
+ * Présence LinkedIn — remplacer par l’URL de page Entreprise si vous en publiez une.
+ * (Profil public vérifié : fondateur d’ORBIS PUBLICA.)
+ */
+const LINKEDIN_PAGE_URL = 'https://www.linkedin.com/in/augustin-musole-63027a130';
 
 const opportunitesSubLinks = [
   {
@@ -116,11 +126,33 @@ export function Navbar() {
 
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3 border-r border-slate-600 pr-4 mr-1">
-              <a href="#" className="hover:text-white transition-colors"><Facebook className="h-3.5 w-3.5" /></a>
-              <a href="#" className="hover:text-white transition-colors"><Twitter className="h-3.5 w-3.5" /></a>
-              <a href="#" className="hover:text-white transition-colors"><Youtube className="h-3.5 w-3.5" /></a>
-              <a href="#" className="hover:text-white transition-colors"><Linkedin className="h-3.5 w-3.5" /></a>
-              <a href="#" className="hover:text-white transition-colors"><Instagram className="h-3.5 w-3.5" /></a>
+              <a
+                href={FACEBOOK_PAGE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+                aria-label="ORBIS Publica sur Facebook"
+              >
+                <Facebook className="h-4.5 w-4.5" />
+              </a>
+              <a
+                href={X_PROFILE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+                aria-label="ORBIS Publica sur X (Twitter)"
+              >
+                <Twitter className="h-4.5 w-4.5" />
+              </a>
+              <a
+                href={LINKEDIN_PAGE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+                aria-label="ORBIS Publica sur LinkedIn"
+              >
+                <Linkedin className="h-4.5 w-4.5" />
+              </a>
             </div>
             
             <div className="hidden lg:flex items-center relative">
@@ -141,11 +173,6 @@ export function Navbar() {
                 aria-label="Recherche sur le site"
               />
               <Search className="h-3 w-3 absolute right-2 text-blue-300 pointer-events-none" aria-hidden />
-            </div>
-
-            <div className="flex items-center gap-1.5 hover:text-white cursor-pointer" title="Français">
-              <Globe className="h-3.5 w-3.5 shrink-0" aria-hidden />
-              <span>FR</span>
             </div>
           </div>
         </div>
