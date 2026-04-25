@@ -126,8 +126,7 @@ export function Home() {
               </p>
 
               <h2 className="mb-8 max-w-xl text-3xl font-bold leading-tight tracking-tight text-primary md:text-4xl lg:text-5xl">
-                Un partenaire stratégique pour les projets de développement en{' '}
-                <span className="text-secondary">RDC</span>
+                Un partenaire de référence pour structurer et garantir la viabilité des projets à fort impact
               </h2>
 
               <div className="max-w-xl space-y-6">
