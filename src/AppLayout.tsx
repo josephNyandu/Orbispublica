@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router';
 import { useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { ChatbotLauncher } from './components/ChatbotLauncher';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -22,6 +23,7 @@ export default function AppLayout() {
         <Outlet />
       </main>
       <Footer />
+      <ChatbotLauncher />
     </div>
   );
 }
