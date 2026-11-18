@@ -53,7 +53,7 @@ export function Expertises() {
               >
                 <div className="p-6 md:p-8 flex flex-col h-full">
                   <span
-                    className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-3"
+                    className="text-sm font-bold text-anapi mb-3"
                     aria-hidden
                   >
                     {String(index + 1).padStart(2, "0")}

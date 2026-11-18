@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { Handshake } from 'lucide-react';
 import { SEO } from '@/components/SEO';
 import { PageHeroBanner } from '@/components/PageHeroBanner';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 export function CabinetPartenaires() {
   return (
@@ -12,8 +13,8 @@ export function CabinetPartenaires() {
       />
       <PageHeroBanner className="py-16 md:py-20">
         <div className="container mx-auto px-6 md:px-10">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-blue-400">Réseau</p>
           <h1 className="text-4xl font-bold md:text-5xl">Partenaires</h1>
+          <Breadcrumbs items={[{ label: 'Cabinet', to: '/notre-cabinet' }, { label: 'Partenaires' }]} />
           <p className="mt-4 max-w-3xl text-lg text-slate-300">
             Le cabinet s&apos;appuie sur un écosystème de partenaires institutionnels, techniques et financiers pour sécuriser et valoriser
             vos projets.

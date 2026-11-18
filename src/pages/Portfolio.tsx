@@ -80,7 +80,7 @@ export function Portfolio() {
                     />
                   </div>
                   <div className="p-6 md:p-8">
-                    <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">
+                    <div className="text-sm font-bold text-anapi mb-2">
                       {project.category}
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 mb-4">{project.title}</h3>

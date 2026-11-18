@@ -11,28 +11,26 @@ type PageHeroBannerProps = {
 };
 
 /**
- * Full-width page hero with shared background art, dark overlay for white text,
- * and a slate fallback if the image is missing.
+ * Bandeau de page façon ANAPI : image partagée, voile bleu nuit, texte blanc centré.
  */
 export function PageHeroBanner({ children, className }: PageHeroBannerProps) {
   return (
     <div
       className={cn(
-        "relative overflow-hidden text-white",
-        "py-12 md:py-20",
+        "relative overflow-hidden text-white text-center",
+        "py-14 md:py-20",
+        /* Style ANAPI : titre centré, paragraphe centré et lisible sur fond bleu nuit */
+        "[&_h1]:font-semibold [&_h1]:text-white [&_p]:mx-auto [&_p]:text-white/85",
         className
       )}
     >
-      <div className="absolute inset-0 bg-slate-900" aria-hidden />
+      <div className="absolute inset-0 bg-navy" aria-hidden />
       <div
         className="absolute inset-0 bg-cover bg-[center_top] bg-no-repeat sm:bg-center"
         style={{ backgroundImage: `url(${PAGE_HERO_IMAGE})` }}
         aria-hidden
       />
-      <div
-        className="absolute inset-0 bg-gradient-to-r from-slate-950/93 via-slate-900/80 to-slate-800/50"
-        aria-hidden
-      />
+      <div className="absolute inset-0 bg-navy/80" aria-hidden />
       <div className="relative z-10">{children}</div>
     </div>
   );

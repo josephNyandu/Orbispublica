@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { Link } from "react-router";
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useServicePublications } from "@/hooks/useServicePublications";
 import { SEO } from "@/components/SEO";
 import { PageHeroBanner } from "@/components/PageHeroBanner";
@@ -23,7 +23,7 @@ export function Services() {
         </div>
       </PageHeroBanner>
 
-      <section className="py-12 md:py-20 bg-slate-50">
+      <section className="py-12 md:py-20 bg-mint">
         <div className="container mx-auto px-6 md:px-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {visibleServices.map((service, index) => (
@@ -33,10 +33,10 @@ export function Services() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group flex flex-col h-full border border-slate-100"
+                className="anapi-card group flex h-full flex-col bg-white"
               >
                 <div className="p-6 md:p-8 flex flex-col h-full">
-                  <h3 className="text-xl font-bold text-slate-900 mb-4">
+                  <h3 className="text-xl font-semibold text-slate-900 mb-4">
                     <Link
                       to={`/services/${service.slug}`}
                       className="hover:text-blue-600 transition-colors"
@@ -51,10 +51,10 @@ export function Services() {
                   <div className="border-t border-slate-100 pt-4 mt-auto">
                     <Link
                       to={`/services/${service.slug}`}
-                      className="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700 uppercase tracking-wider"
+                      className="inline-flex items-center gap-1.5 text-sm font-bold text-anapi hover:text-blue-500"
                     >
+                      <ChevronRight className="h-4 w-4" aria-hidden />
                       Fiche détaillée
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
                 </div>

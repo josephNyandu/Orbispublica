@@ -19,18 +19,7 @@ import { cabinetNavLinks } from '@/data/cabinetNav';
 import { publicationsNavLinks } from '@/data/publicationsNav';
 import { getLoginHref, isAbsoluteLoginHref } from '@/lib/loginUrl';
 
-/** Page Facebook officielle ORBIS Publica (Kinshasa). */
-const FACEBOOK_PAGE_URL =
-  'https://www.facebook.com/share/1DqW29w8fH/?mibextid=wwXIfr';
-
-/** Compte X (Twitter) officiel ORBIS Publica. */
-const X_PROFILE_URL = 'https://x.com/orbispublica?s=21';
-
-/**
- * Présence LinkedIn — remplacer par l’URL de page Entreprise si vous en publiez une.
- * (Profil public vérifié : fondateur d’ORBIS PUBLICA.)
- */
-const LINKEDIN_PAGE_URL = 'https://www.linkedin.com/in/augustin-musole-63027a130';
+import { FACEBOOK_PAGE_URL, LINKEDIN_PAGE_URL, X_PROFILE_URL } from '@/data/social';
 
 const opportunitesSubLinks = [
   {
@@ -101,9 +90,9 @@ export function Navbar() {
     return location.pathname.startsWith(path);
   };
 
-  /** Survol sobre : texte + soulignement uniquement (pas de fond, pas d’ombre, pas de rounded). */
+  /** Liens du menu façon ANAPI : Roboto, bleu institutionnel, bleu ciel au survol et pour la page active. */
   const desktopNavLinkBase =
-    'whitespace-nowrap text-base font-medium transition-colors duration-200 hover:text-blue-800 hover:underline underline-offset-[6px] decoration-2 decoration-blue-700/80';
+    'whitespace-nowrap py-3 font-[family-name:var(--font-alt)] text-[15px] font-medium transition-colors duration-200 hover:text-blue-500';
 
   return (
     <nav
@@ -112,46 +101,46 @@ export function Navbar() {
       }`}
     >
       {/* Top Bar */}
-      <div className={`w-full bg-blue-600 text-slate-100 border-b border-blue-700 transition-all duration-300 overflow-hidden ${isScrolled ? 'max-h-0 opacity-0' : 'max-h-14 py-3'}`}>
+      <div className={`w-full bg-blue-600 text-white transition-all duration-300 overflow-hidden ${isScrolled ? 'max-h-0 opacity-0' : 'max-h-14 py-2.5'}`}>
         <div className="container mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center text-xs font-medium">
           <div className="flex items-center space-x-4 mb-2 md:mb-0">
-            <a href={`mailto:${siteContact.navbar.email}`} className="flex items-center hover:text-white transition-colors">
+            <a href={`mailto:${siteContact.navbar.email}`} className="flex items-center transition-colors hover:text-gold-bright">
               <Mail className="h-3.5 w-3.5 mr-1.5" /> {siteContact.navbar.email}
             </a>
-            <span className="hidden md:inline text-slate-600">|</span>
-            <a href={`tel:${siteContact.navbar.phoneTel}`} className="flex items-center hover:text-white transition-colors">
+            
+            <a href={`tel:${siteContact.navbar.phoneTel}`} className="flex items-center transition-colors hover:text-gold-bright">
               <Phone className="h-3.5 w-3.5 mr-1.5" /> {siteContact.navbar.phoneDisplay}
             </a>
           </div>
 
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-3 border-r border-slate-600 pr-4 mr-1">
+            <div className="flex items-center gap-1">
               <a
                 href={FACEBOOK_PAGE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-white transition-colors"
+                className="grid h-7 w-7 place-items-center rounded-full transition-colors hover:bg-blue-500"
                 aria-label="ORBIS Publica sur Facebook"
               >
-                <Facebook className="h-4.5 w-4.5" />
+                <Facebook className="h-3.5 w-3.5" />
               </a>
               <a
                 href={X_PROFILE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-white transition-colors"
+                className="grid h-7 w-7 place-items-center rounded-full transition-colors hover:bg-blue-500"
                 aria-label="ORBIS Publica sur X (Twitter)"
               >
-                <Twitter className="h-4.5 w-4.5" />
+                <Twitter className="h-3.5 w-3.5" />
               </a>
               <a
                 href={LINKEDIN_PAGE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-white transition-colors"
+                className="grid h-7 w-7 place-items-center rounded-full transition-colors hover:bg-blue-500"
                 aria-label="ORBIS Publica sur LinkedIn"
               >
-                <Linkedin className="h-4.5 w-4.5" />
+                <Linkedin className="h-3.5 w-3.5" />
               </a>
             </div>
             
@@ -169,10 +158,10 @@ export function Navbar() {
                   if (!q) return;
                   navigate(`/recherche?${new URLSearchParams({ q }).toString()}`);
                 }}
-                className="bg-blue-700 border border-blue-500 text-slate-100 rounded px-2 py-1 pr-7 w-48 focus:outline-none focus:border-blue-400 text-xs placeholder:text-blue-300"
+                className="w-48 rounded border-0 bg-white px-2.5 py-1.5 pr-8 text-xs text-slate-800 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-label="Recherche sur le site"
               />
-              <Search className="h-3 w-3 absolute right-2 text-blue-300 pointer-events-none" aria-hidden />
+              <Search className="h-3.5 w-3.5 absolute right-2.5 text-blue-600 pointer-events-none" aria-hidden />
             </div>
           </div>
         </div>
@@ -193,19 +182,17 @@ export function Navbar() {
               <Link
                 to="/"
                 className={`${desktopNavLinkBase} inline-block ${
-                  isActive('/') ? 'text-blue-600' : 'text-slate-700'
+                  isActive('/') ? 'text-blue-500' : 'text-blue-600'
                 }`}
               >
                 Accueil
               </Link>
 
-              <span className="hidden xl:inline h-4 w-px shrink-0 bg-slate-400/70" aria-hidden />
-
               <div className="relative group">
                 <Link
                   to="/notre-cabinet"
                   className={`${desktopNavLinkBase} inline-flex items-center gap-1 ${
-                    isCabinetSectionActive ? 'text-blue-600' : 'text-slate-700'
+                    isCabinetSectionActive ? 'text-blue-500' : 'text-blue-600'
                   }`}
                 >
                   Cabinet
@@ -216,14 +203,14 @@ export function Navbar() {
                   role="menu"
                   aria-label="Sous-menu Cabinet"
                 >
-                  <div className="rounded-lg border border-slate-200 bg-white py-2">
+                  <div className="rounded-b-lg border-t-[3px] border-t-blue-500 bg-white py-2 shadow-xl">
                     {cabinetNavLinks.map((sublink) => (
                       <Link
                         key={sublink.path}
                         to={sublink.path}
                         role="menuitem"
-                        className={`block px-4 py-2.5 text-sm transition-colors hover:bg-slate-100 hover:text-blue-700 ${
-                          isCabinetNavActive(location.pathname, sublink.path) ? 'bg-blue-50 text-blue-700' : 'text-slate-700'
+                        className={`block px-4 py-2.5 text-sm transition-colors hover:bg-mint hover:text-blue-600 ${
+                          isCabinetNavActive(location.pathname, sublink.path) ? 'bg-mint text-blue-600' : 'text-slate-800'
                         }`}
                       >
                         {sublink.name}
@@ -233,24 +220,20 @@ export function Navbar() {
                 </div>
               </div>
 
-              <span className="hidden xl:inline h-4 w-px shrink-0 bg-slate-400/70" aria-hidden />
-
               <Link
                 to="/services"
                 className={`${desktopNavLinkBase} inline-block ${
-                  isServicesActive ? 'text-blue-600' : 'text-slate-700'
+                  isServicesActive ? 'text-blue-500' : 'text-blue-600'
                 }`}
               >
                 Services
               </Link>
 
-              <span className="hidden xl:inline h-4 w-px shrink-0 bg-slate-400/70" aria-hidden />
-
               <div className="relative group">
                 <Link
                   to="/opportunites"
                   className={`${desktopNavLinkBase} inline-flex items-center gap-1 ${
-                    isOpportunitesActive ? 'text-blue-600' : 'text-slate-700'
+                    isOpportunitesActive ? 'text-blue-500' : 'text-blue-600'
                   }`}
                 >
                   Opportunités
@@ -261,23 +244,23 @@ export function Navbar() {
                   role="menu"
                   aria-label="Sous-menu Opportunités"
                 >
-                  <div className="overflow-visible rounded-lg border border-slate-200 bg-white py-2">
+                  <div className="overflow-visible rounded-b-lg border-t-[3px] border-t-blue-500 bg-white py-2 shadow-xl">
                     {opportunitesSubLinks.map((sublink) =>
                       'nested' in sublink ? (
                         (() => {
                           const selfActive = location.pathname === sublink.path;
                           const childActive = sublink.nested.some((n) => n.path === location.pathname);
                           const rowState = selfActive
-                            ? 'bg-blue-50 text-blue-700'
+                            ? 'bg-mint text-blue-600'
                             : childActive
-                              ? 'bg-slate-50 text-slate-800'
-                              : 'text-slate-700';
+                              ? 'bg-mint/60 text-slate-800'
+                              : 'text-slate-800';
                           return (
                         <div key={sublink.path} className="group/ao relative">
                           <Link
                             to={sublink.path}
                             role="menuitem"
-                            className={`flex items-center justify-between gap-2 px-4 py-2.5 text-sm transition-colors hover:bg-slate-100 hover:text-blue-700 ${rowState}`}
+                            className={`flex items-center justify-between gap-2 px-4 py-2.5 text-sm transition-colors hover:bg-mint hover:text-blue-600 ${rowState}`}
                           >
                             {sublink.name}
                             <ChevronRight
@@ -290,14 +273,14 @@ export function Navbar() {
                             role="menu"
                             aria-label="Sous-menu Appels d'offres"
                           >
-                            <div className="min-w-[220px] rounded-r-lg border border-slate-200 border-l-0 bg-white py-2">
+                            <div className="min-w-[220px] rounded-lg border-t-[3px] border-t-blue-500 bg-white py-2 shadow-xl">
                               {sublink.nested.map((n) => (
                                 <Link
                                   key={n.path}
                                   to={n.path}
                                   role="menuitem"
-                                  className={`block px-4 py-2.5 text-sm transition-colors hover:bg-slate-100 hover:text-blue-700 ${
-                                    location.pathname === n.path ? 'bg-blue-50 text-blue-700' : 'text-slate-700'
+                                  className={`block px-4 py-2.5 text-sm transition-colors hover:bg-mint hover:text-blue-600 ${
+                                    location.pathname === n.path ? 'bg-mint text-blue-600' : 'text-slate-800'
                                   }`}
                                 >
                                   {n.name}
@@ -313,8 +296,8 @@ export function Navbar() {
                           key={sublink.path}
                           to={sublink.path}
                           role="menuitem"
-                          className={`block px-4 py-2.5 text-sm transition-colors hover:bg-slate-100 hover:text-blue-700 ${
-                            location.pathname === sublink.path ? 'text-blue-700 bg-blue-50' : 'text-slate-700'
+                          className={`block px-4 py-2.5 text-sm transition-colors hover:bg-mint hover:text-blue-600 ${
+                            location.pathname === sublink.path ? 'bg-mint text-blue-600' : 'text-slate-800'
                           }`}
                         >
                           {sublink.name}
@@ -325,13 +308,11 @@ export function Navbar() {
                 </div>
               </div>
 
-              <span className="hidden xl:inline h-4 w-px shrink-0 bg-slate-400/70" aria-hidden />
-
               <div className="relative group">
                 <Link
                   to="/publications"
                   className={`${desktopNavLinkBase} inline-flex items-center gap-1 ${
-                    isPublicationsActive ? 'text-blue-600' : 'text-slate-700'
+                    isPublicationsActive ? 'text-blue-500' : 'text-blue-600'
                   }`}
                 >
                   Publications
@@ -342,14 +323,14 @@ export function Navbar() {
                   role="menu"
                   aria-label="Sous-menu Publications"
                 >
-                  <div className="rounded-lg border border-slate-200 bg-white py-2">
+                  <div className="rounded-b-lg border-t-[3px] border-t-blue-500 bg-white py-2 shadow-xl">
                     {publicationsNavLinks.map((sublink) => (
                       <Link
                         key={sublink.path}
                         to={sublink.path}
                         role="menuitem"
-                        className={`block px-4 py-2.5 text-sm transition-colors hover:bg-slate-100 hover:text-blue-700 ${
-                          location.pathname === sublink.path ? 'bg-blue-50 text-blue-700' : 'text-slate-700'
+                        className={`block px-4 py-2.5 text-sm transition-colors hover:bg-mint hover:text-blue-600 ${
+                          location.pathname === sublink.path ? 'bg-mint text-blue-600' : 'text-slate-800'
                         }`}
                       >
                         {sublink.name}
@@ -359,14 +340,12 @@ export function Navbar() {
                 </div>
               </div>
 
-              <span className="hidden xl:inline h-4 w-px shrink-0 bg-slate-400/70" aria-hidden />
-
               {links.slice(1).map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   className={`${desktopNavLinkBase} inline-block ${
-                    isActive(link.path) ? 'text-blue-600' : 'text-slate-700'
+                    isActive(link.path) ? 'text-blue-500' : 'text-blue-600'
                   }`}
                 >
                   {link.name}
@@ -380,20 +359,22 @@ export function Navbar() {
               <a
                 href={loginHref}
                 title="Connexion ou inscription au registre"
-                className={`inline-flex px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold rounded-md transition-colors ${
+                className={`anapi-btn ${
                   isAuthPortal ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-[#E2F0F2]' : ''
                 }`}
               >
+                <ChevronRight className="h-4 w-4" aria-hidden />
                 Connexion
               </a>
             ) : (
               <Link
                 to={loginHref}
                 title="Connexion ou inscription au registre"
-                className={`inline-flex px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold rounded-md transition-colors ${
+                className={`anapi-btn ${
                   isAuthPortal ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-[#E2F0F2]' : ''
                 }`}
               >
+                <ChevronRight className="h-4 w-4" aria-hidden />
                 Connexion
               </Link>
             )}
@@ -401,8 +382,11 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden text-slate-800 z-50 focus:outline-none"
+            type="button"
+            className="z-50 grid h-11 w-11 place-items-center rounded-md bg-blue-600 text-white lg:hidden"
             onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
+            aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -416,14 +400,14 @@ export function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 right-0 bg-[#E2F0F2] shadow-xl border-t border-slate-300/80 lg:hidden"
+            className="absolute top-full left-0 right-0 max-h-[calc(100vh-5rem)] overflow-y-auto border-t-[3px] border-blue-500 bg-white shadow-xl lg:hidden"
           >
             <div className="flex flex-col p-4 space-y-4">
               <Link
                 to="/"
                 onClick={() => setIsOpen(false)}
                 className={`block border-b border-slate-300/80 py-2 text-base font-medium ${
-                  isActive('/') ? 'text-blue-600' : 'text-slate-700'
+                  isActive('/') ? 'text-blue-500' : 'text-blue-600'
                 }`}
               >
                 Accueil
@@ -434,7 +418,7 @@ export function Navbar() {
                   type="button"
                   onClick={() => setCabinetExpanded((v) => !v)}
                   className={`flex w-full items-center justify-between py-2 text-base font-medium ${
-                    isCabinetSectionActive ? 'text-blue-600' : 'text-slate-700'
+                    isCabinetSectionActive ? 'text-blue-500' : 'text-blue-600'
                   }`}
                   aria-expanded={cabinetExpanded}
                 >
@@ -469,7 +453,7 @@ export function Navbar() {
                 to="/services"
                 onClick={() => setIsOpen(false)}
                 className={`block border-b border-slate-300/80 py-2 text-base font-medium ${
-                  isServicesActive ? 'text-blue-600' : 'text-slate-700'
+                  isServicesActive ? 'text-blue-500' : 'text-blue-600'
                 }`}
               >
                 Services
@@ -480,7 +464,7 @@ export function Navbar() {
                   type="button"
                   onClick={() => setOpportunitesExpanded((v) => !v)}
                   className={`flex w-full items-center justify-between py-2 text-base font-medium ${
-                    isOpportunitesActive ? 'text-blue-600' : 'text-slate-700'
+                    isOpportunitesActive ? 'text-blue-500' : 'text-blue-600'
                   }`}
                   aria-expanded={opportunitesExpanded}
                 >
@@ -551,7 +535,7 @@ export function Navbar() {
                   type="button"
                   onClick={() => setPublicationsExpanded((v) => !v)}
                   className={`flex w-full items-center justify-between py-2 text-base font-medium ${
-                    isPublicationsActive ? 'text-blue-600' : 'text-slate-700'
+                    isPublicationsActive ? 'text-blue-500' : 'text-blue-600'
                   }`}
                   aria-expanded={publicationsExpanded}
                 >
@@ -588,7 +572,7 @@ export function Navbar() {
                   to={link.path}
                   onClick={() => setIsOpen(false)}
                   className={`text-base font-medium block py-2 border-b border-slate-300/80 ${
-                    isActive(link.path) ? 'text-blue-600' : 'text-slate-700'
+                    isActive(link.path) ? 'text-blue-500' : 'text-blue-600'
                   }`}
                 >
                   {link.name}
@@ -598,7 +582,7 @@ export function Navbar() {
                 <a
                   href={loginHref}
                   onClick={() => setIsOpen(false)}
-                  className="w-full text-center py-3 bg-blue-500 hover:bg-blue-600 transition-colors text-white font-bold rounded-md mt-4"
+                  className="anapi-btn mt-4 w-full"
                 >
                   Connexion
                 </a>
@@ -606,7 +590,7 @@ export function Navbar() {
                 <Link
                   to={loginHref}
                   onClick={() => setIsOpen(false)}
-                  className="w-full text-center py-3 bg-blue-500 hover:bg-blue-600 transition-colors text-white font-bold rounded-md mt-4"
+                  className="anapi-btn mt-4 w-full"
                 >
                   Connexion
                 </Link>
