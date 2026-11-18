@@ -1,6 +1,7 @@
 import { PageHeroBanner } from "@/components/PageHeroBanner";
 import { OpportunityPostsSection } from "@/components/OpportunityPostsSection";
 import { OpportuniteSuivantNav } from "@/components/OpportuniteSuivantNav";
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 const SEGMENT_COPY = {
   ppp: {
@@ -27,8 +28,8 @@ export function OpportunitesSegmentPage({ segment }: Props) {
     <div className="pt-20">
       <PageHeroBanner>
         <div className="container mx-auto px-6 md:px-10">
-          <p className="text-sm font-semibold uppercase tracking-widest text-blue-400 mb-3">{copy.kicker}</p>
           <h1 className="text-3xl md:text-5xl font-bold mb-6">{copy.title}</h1>
+          <Breadcrumbs items={[{ label: "Appels d'offres", to: '/opportunites' }, { label: copy.kicker }]} />
           <p className="text-xl text-slate-300 max-w-3xl leading-relaxed">{copy.lead}</p>
         </div>
       </PageHeroBanner>

@@ -117,9 +117,7 @@ export function OpportunityPostsSection({ category, className = "" }: Props) {
     return (
       <section className={`py-10 md:py-12 bg-slate-50 border-y border-slate-100 ${className}`}>
         <div className="container mx-auto px-4 md:px-6">
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-2 text-center">
-            {label}
-          </p>
+          <h2 className="anapi-title text-center mb-4 text-2xl">{label}</h2>
           <p className="text-center text-slate-600 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
             Aucune publication pour le moment dans cette rubrique. Les annonces validées dans l&apos;administration
             du site s&apos;affichent ici automatiquement.
@@ -138,8 +136,7 @@ export function OpportunityPostsSection({ category, className = "" }: Props) {
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-2">Annonces</p>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+                        <h2 className="anapi-title text-2xl md:text-3xl">
               Publications — {label}
             </h2>
           </div>

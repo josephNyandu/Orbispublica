@@ -1,7 +1,7 @@
 import avocatsEnLigneImage from '../assets/avocats-en-ligne-une-solution-rapide-efficace-pour-les-particuliers-et-les-professionnels.jpg';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router';
-import { ArrowRight, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useServicePublications } from '@/hooks/useServicePublications';
 import { SEO } from '@/components/SEO';
@@ -25,11 +25,11 @@ export function Home() {
   }, []);
 
   return (
-    <div className="bg-blue-50">
+    <div className="bg-white">
       <SEO />
-      {/* Hero Section */}
-      <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-primary">
+      {/* Bandeau d'accueil façon ANAPI : photo, voile bleu à gauche, titre blanc, deux boutons arrondis */}
+      <section className="relative flex min-h-[620px] h-screen items-center overflow-hidden">
+        <div className="absolute inset-0 z-0 bg-blue-700">
           <AnimatePresence mode="popLayout">
             <motion.img
               key={currentImageIndex}
@@ -38,111 +38,74 @@ export function Home() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1.5 }}
-              className="absolute inset-0 w-full h-full object-cover"
-              alt="Background"
+              className="absolute inset-0 h-full w-full object-cover"
+              alt=""
             />
           </AnimatePresence>
-          
-          {/* Overlay: lecture à gauche, photo respirante à droite, accord avec le dégradé du titre (bleu institutionnel → cyan) */}
           <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-800/90 from-[0%] via-primary/78 via-[42%] to-blue-500/18 to-[100%]"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_65%_at_0%_50%,rgba(30,41,59,0.5),transparent_62%)]"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-800/45 via-transparent to-slate-800/25"
-            aria-hidden
-          />
-          {/* Grain fin (au-dessus des dégradés) */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.035] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(3,56,97,0.88)_0%,rgba(3,56,97,0.6)_55%,rgba(3,56,97,0.15)_100%)]"
             aria-hidden
           />
         </div>
 
-        <div className="container mx-auto px-6 md:px-10 relative z-10 pt-20">
-          <motion.div 
+        <div className="container relative z-10 mx-auto px-6 pt-20 md:px-10">
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-4xl"
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="max-w-3xl"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 tracking-tight">
-              Projets,<br /> 
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Partenariats</span> <br/>
-              & Financements
+            <h1 className="mb-6 text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl">
+              Projets, <span className="text-blue-400">Partenariats</span>
+              <br />& Financements
             </h1>
-            
-            <p className="text-sm md:text-base text-slate-300 mb-10 max-w-2xl leading-relaxed font-light border-l-4 border-blue-500 pl-6">
-            Expertise en PPP, marchés publics et projets de développement, intégrant la mobilisation de financements, subventions et exonérations, au service de la mise en œuvre de projets en RDC et en Afrique.
+
+            <p className="mb-8 max-w-2xl text-base leading-relaxed text-white/90 md:text-lg">
+              Expertise en PPP, marchés publics et projets de développement, intégrant la mobilisation de financements, subventions et exonérations, au service de la mise en œuvre de projets en RDC et en Afrique.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-5">
-              <Link 
-                to="/expertises" 
-                className="group px-8 py-4 bg-primary hover:bg-primary/90 text-white text-base font-bold rounded-lg transition-all shadow-lg flex items-center justify-center"
-              >
-                NOS EXPERTISES 
-                <ArrowRight className="ml-2 h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link to="/expertises" className="anapi-btn anapi-btn--pill">
+                <ChevronRight className="h-4 w-4" aria-hidden />
+                Nos expertises
               </Link>
-              <Link 
-                to="/contact" 
-                className="px-8 py-4 bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 hover:border-white/20 text-white text-base font-bold rounded-lg transition-all flex items-center justify-center"
-              >
-                NOUS CONTACTER
+              <Link to="/contact" className="anapi-btn anapi-btn--pill anapi-btn--gold">
+                <ChevronRight className="h-4 w-4" aria-hidden />
+                Nous contacter
               </Link>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Introduction Section — éditorial institutionnel */}
-      <section className="relative overflow-hidden bg-white py-20 md:py-28">
-        <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_70%_at_0%_-10%,rgba(0,163,224,0.07),transparent_55%),linear-gradient(180deg,rgb(248_250_252)_0%,#fff_38%)]"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"
-          aria-hidden
-        />
-
-        <div className="container relative mx-auto px-6 md:px-10">
-          <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-16 xl:gap-24">
+      {/* Présentation */}
+      <section className="bg-white py-16 md:py-24">
+        <div className="container mx-auto px-6 md:px-10">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <motion.div
               initial={{ opacity: 0, x: -28 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className="relative"
             >
-              <p className="mb-5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-500">
-                <span className="text-secondary">À propos</span>
-                <span className="mx-2.5 text-slate-300">·</span>
-                <span className="text-primary">Orbis Publica</span>
-              </p>
-
-              <h2 className="mb-8 max-w-xl text-3xl font-bold leading-tight tracking-tight text-primary md:text-4xl lg:text-5xl">
+              <h2 className="anapi-title mb-8 max-w-xl text-3xl md:text-4xl">
                 Un partenaire de référence pour structurer et garantir la viabilité des projets à fort impact
               </h2>
 
-              <div className="max-w-xl space-y-6">
-                <p className="border-l-[3px] border-secondary/70 pl-5 text-lg font-medium leading-relaxed text-slate-800 md:text-xl">
-                  Dans un contexte marqué par une exigence croissante de transparence et de performance, ORBIS
-                  PUBLICA accompagne les acteurs publics et privés dans la structuration, la sécurisation et la mise
-                  en œuvre efficace de projets en partenariats public-privé (PPP), marchés publics et projets de
-                  développement.
+              <div className="max-w-xl space-y-5 text-justify">
+                <p className="text-lg leading-relaxed text-slate-800">
+                  Dans un contexte marqué par une exigence croissante de transparence et de performance,{' '}
+                  <strong className="text-blue-600">ORBIS PUBLICA</strong> accompagne les acteurs publics et privés dans
+                  la structuration, la sécurisation et la mise en œuvre efficace de projets en partenariats
+                  public-privé (PPP), marchés publics et projets de développement.
                 </p>
-                <p className="text-base leading-relaxed text-slate-600 md:text-[1.05rem]">
+                <p className="leading-relaxed text-slate-600">
                   Nous transformons les défis réglementaires et administratifs en opportunités stratégiques, dans
                   une approche orientée conformité, performance et résultats.
                 </p>
               </div>
 
-              <ul className="mt-10 grid gap-3 sm:grid-cols-2">
+              <ul className="mt-8 grid gap-3 sm:grid-cols-2">
                 {[
                   'Expertise locale éprouvée',
                   'Réseau institutionnel',
@@ -155,24 +118,19 @@ export function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.08 * idx, duration: 0.45 }}
-                    className="flex gap-3 rounded-xl border border-slate-200/90 bg-slate-50/60 p-4 shadow-sm shadow-slate-200/40 transition-[border-color,box-shadow,background-color] duration-300 hover:border-secondary/35 hover:bg-white hover:shadow-md"
+                    className="flex items-center gap-3 rounded-xl bg-white p-4 shadow-[0_10px_30px_rgba(3,80,137,0.12)]"
                   >
-                    <CheckCircle2
-                      className="mt-0.5 h-5 w-5 shrink-0 text-secondary"
-                      strokeWidth={2}
-                      aria-hidden
-                    />
-                    <span className="text-sm font-semibold leading-snug text-primary">{item}</span>
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-mint text-anapi">
+                      <CheckCircle2 className="h-5 w-5" strokeWidth={2} aria-hidden />
+                    </span>
+                    <span className="text-sm font-bold leading-snug text-blue-600">{item}</span>
                   </motion.li>
                 ))}
               </ul>
 
-              <Link
-                to="/notre-cabinet"
-                className="group mt-10 inline-flex items-center gap-2 rounded-lg bg-primary px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-primary/25 transition-[background-color,box-shadow,transform] hover:bg-blue-800 hover:shadow-xl hover:shadow-primary/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-              >
+              <Link to="/notre-cabinet" className="anapi-btn mt-8">
+                <ChevronRight className="h-4 w-4" aria-hidden />
                 Notre cabinet
-                <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
             </motion.div>
 
@@ -181,166 +139,114 @@ export function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-              className="relative lg:pl-4"
+              className="relative pb-10"
             >
-              <div
-                className="pointer-events-none absolute -right-6 -top-8 h-40 w-40 rounded-full bg-secondary/20 blur-3xl"
-                aria-hidden
+              <img
+                src={avocatsEnLigneImage}
+                alt="Avocats en ligne, solution rapide et efficace pour particuliers et professionnels"
+                className="aspect-[4/5] max-h-[min(32rem,70vh)] w-full rounded-xl object-cover shadow-xl"
               />
-              <div
-                className="pointer-events-none absolute -bottom-4 right-8 h-48 w-48 rounded-full bg-primary/10 blur-3xl"
-                aria-hidden
-              />
-
-              <div className="relative rounded-2xl border border-slate-200/80 bg-gradient-to-br from-slate-100 to-slate-50/80 p-2 shadow-inner">
-                <div className="absolute inset-2 rounded-xl bg-gradient-to-tr from-secondary/15 via-transparent to-transparent opacity-80" aria-hidden />
-                <img
-                  src={avocatsEnLigneImage}
-                  alt="Avocats en ligne, solution rapide et efficace pour particuliers et professionnels"
-                  className="relative z-10 aspect-[4/5] w-full max-h-[min(32rem,70vh)] rounded-xl object-cover shadow-xl ring-1 ring-slate-900/5"
-                />
-              </div>
-
-              <motion.div
-                initial={{ y: 24, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.35, duration: 0.55 }}
-                className="absolute -bottom-6 left-2 right-auto z-20 max-w-[18rem] rounded-xl border border-slate-200/90 bg-white/95 p-5 shadow-2xl shadow-slate-900/10 backdrop-blur-sm sm:-bottom-8 sm:-left-6 md:left-0"
-              >
-                <div className="mb-3 h-px w-12 rounded-full bg-gradient-to-r from-secondary to-primary" aria-hidden />
-                <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-slate-500">
-                  Projets accompagnés
-                </p>
-                <p className="mt-1 text-4xl font-bold tabular-nums text-primary">
-                  +50
-                </p>
-                <p className="mt-3 border-t border-slate-100 pt-3 text-sm italic leading-snug text-slate-600">
+              <div className="absolute bottom-0 left-4 max-w-[17rem] rounded-xl bg-blue-600 p-5 text-white shadow-2xl">
+                <p className="m-0 text-sm font-bold text-blue-300">Projets accompagnés</p>
+                <p className="m-0 font-[family-name:var(--font-head)] text-5xl font-bold tabular-nums">+50</p>
+                <p className="mt-2 border-t border-white/20 pt-2 text-sm italic leading-snug text-white/90">
                   « L&apos;excellence au service du bien commun »
                 </p>
-              </motion.div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="py-16 md:py-24 bg-slate-50 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-100/50 skew-x-12 transform translate-x-1/2"></div>
-        
-        <div className="container mx-auto px-6 md:px-10 relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h4 className="text-blue-600 font-bold uppercase tracking-widest text-sm mb-3">Nos Expertises</h4>
-            <h2 className="text-3xl md:text-5xl font-bold text-primary mb-6">Une offre de services à 360°</h2>
-            <p className="text-slate-600 text-lg">
-              Des solutions concrètes et opérationnelles pour répondre aux défis des acteurs publics et privés en RDC.
-            </p>
+      {/* Services : cartes façon « Dernières actualités » d'ANAPI */}
+      <section className="bg-mint py-16 md:py-24">
+        <div className="container mx-auto px-6 md:px-10">
+          <div className="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+            <div className="max-w-2xl">
+              <h2 className="anapi-title mb-4 text-3xl md:text-4xl">Une offre de services à 360°</h2>
+              <p className="m-0 text-lg text-slate-700">
+                Des solutions concrètes et opérationnelles pour répondre aux défis des acteurs publics et privés en RDC.
+              </p>
+            </div>
+            <Link to="/services" className="anapi-btn shrink-0">
+              <ChevronRight className="h-4 w-4" aria-hidden />
+              Tous nos services
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {visibleServices.map((service, idx) => (
               <motion.div
                 key={service.slug}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: idx * 0.1, duration: 0.5 }}
+                transition={{ delay: idx * 0.08, duration: 0.5 }}
               >
-                <Link 
-                  to={`/services/${service.slug}`}
-                  className="group block h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100"
-                >
-                  <div className="relative h-56 overflow-hidden">
-                    <div className="absolute inset-0 bg-primary/20 group-hover:bg-primary/0 transition-colors z-10"></div>
-                    <img 
-                      src={service.image} 
-                      alt={service.title} 
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                <Link to={`/services/${service.slug}`} className="anapi-card group flex h-full flex-col bg-white">
+                  <div className="aspect-[3/2] overflow-hidden bg-mint">
+                    <img
+                      src={service.image}
+                      alt=""
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute bottom-4 left-4 z-20">
-                       <span className="bg-white/90 backdrop-blur-sm text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                         Service
-                       </span>
-                    </div>
                   </div>
-                  <div className="p-8">
-                    <h3 className="text-2xl font-bold text-primary mb-3 group-hover:text-blue-600 transition-colors">
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="mb-2 text-xl font-semibold leading-snug text-slate-900 transition-colors group-hover:text-blue-600">
                       {service.title}
                     </h3>
-                    <p className="text-slate-600 mb-6 leading-relaxed">
-                      {service.description}
-                    </p>
-                    <div className="flex items-center text-blue-600 font-bold text-sm uppercase tracking-wider group-hover:underline decoration-2 underline-offset-4">
-                      Découvrir <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </div>
+                    <p className="mb-5 flex-1 text-sm leading-relaxed text-slate-600">{service.description}</p>
+                    <span className="inline-flex items-center gap-1.5 text-sm font-bold text-anapi">
+                      <ChevronRight className="h-4 w-4" aria-hidden />
+                      En savoir plus
+                    </span>
                   </div>
                 </Link>
               </motion.div>
             ))}
           </div>
-
-          <div className="text-center mt-16">
-            <Link 
-              to="/services" 
-              className="inline-flex items-center justify-center px-8 py-4 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
-            >
-              VOIR TOUS NOS SERVICES
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* Trust/Partners Section (New) */}
-      <section className="py-16 md:py-20 bg-white">
-        <div className="container mx-auto px-6 md:px-10 text-center">
-          <h3 className="text-lg text-slate-400 font-semibold uppercase tracking-widest mb-12">Ils nous font confiance</h3>
-          <div className="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-             {/* Placeholders for logos - simplified for this demo */}
-             {["Banque Mondiale", "Union Européenne", "BAD", "Gouvernement RDC", "Entreprises Privées"].map((partner, i) => (
-               <div key={i} className="text-xl md:text-2xl font-bold text-slate-300 hover:text-primary/80 transition-colors cursor-default">
-                 {partner}
-               </div>
-             ))}
-          </div>
+      {/* Partenaires : bandeau de logos façon ANAPI */}
+      <section className="bg-white py-16 md:py-20">
+        <div className="container mx-auto px-6 md:px-10">
+          <h2 className="anapi-title mb-10 text-center text-3xl md:text-4xl">Ils nous font confiance</h2>
+          <ul className="m-0 grid list-none grid-cols-2 gap-4 p-0 sm:grid-cols-3 lg:grid-cols-5">
+            {['Banque Mondiale', 'Union Européenne', 'BAD', 'Gouvernement RDC', 'Entreprises Privées'].map((partner) => (
+              <li
+                key={partner}
+                className="grid min-h-28 place-items-center rounded-xl bg-white p-4 text-center font-[family-name:var(--font-head)] text-lg font-semibold text-blue-600 shadow-[0_2px_10px_rgba(0,0,0,0.08)]"
+              >
+                {partner}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative py-20 md:py-28 overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1671722294182-ed01cbe66bd1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" 
-            alt="Office" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-blue-700/90 mix-blend-multiply"></div>
-          <div className="absolute inset-0 bg-primary/40"></div>
-        </div>
-
-        <div className="container mx-auto px-6 md:px-10 relative z-10 text-center text-white">
+      {/* Appel à l'action : bandeau bleu ANAPI */}
+      <section className="bg-anapi py-16 text-center text-white md:py-20">
+        <div className="container mx-auto px-6 md:px-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-3xl md:text-5xl font-bold mb-8 max-w-4xl mx-auto leading-tight">
+            <h2 className="mx-auto mb-5 max-w-3xl text-3xl font-semibold leading-tight text-gold-bright md:text-4xl">
               Prêt à concrétiser vos ambitions ?
             </h2>
-            <p className="text-xl text-blue-100/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/90">
               Discutons de votre projet autour d'un café ou en visio. Notre équipe est prête à vous accompagner.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-6">
-              <Link 
-                to="/contact" 
-                className="px-10 py-5 bg-white text-primary text-lg font-bold rounded-lg hover:bg-slate-100 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
-              >
+            <div className="flex flex-col justify-center gap-3 sm:flex-row">
+              <Link to="/contact" className="anapi-btn">
+                <ChevronRight className="h-4 w-4" aria-hidden />
                 Démarrer une collaboration
               </Link>
-              <Link 
-                to="/nos-realisations" 
-                className="px-10 py-5 bg-transparent border-2 border-white text-white text-lg font-bold rounded-lg hover:bg-white/10 transition-all hover:-translate-y-1"
-              >
+              <Link to="/nos-realisations" className="anapi-btn anapi-btn--gold">
+                <ChevronRight className="h-4 w-4" aria-hidden />
                 Voir nos réalisations
               </Link>
             </div>
