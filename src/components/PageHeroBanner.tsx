@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import { motion } from "motion/react";
 import { cn } from "@/components/ui/utils";
+import { EASE } from "@/components/motion/Motion";
 
 /** Royalty-free stock (Pexels); see `public/images/page-hero-banner.source.txt`. */
 const PAGE_HERO_IMAGE = "/images/page-hero-banner.jpg";
@@ -26,12 +28,27 @@ export function PageHeroBanner({ children, className }: PageHeroBannerProps) {
     >
       <div className="absolute inset-0 bg-navy" aria-hidden />
       <div
-        className="absolute inset-0 bg-cover bg-[center_top] bg-no-repeat sm:bg-center"
+        className="orbis-kenburns absolute inset-0 bg-cover bg-[center_top] bg-no-repeat sm:bg-center"
         style={{ backgroundImage: `url(${PAGE_HERO_IMAGE})` }}
         aria-hidden
       />
       <div className="absolute inset-0 bg-navy/80" aria-hidden />
-      <div className="relative z-10">{children}</div>
+      {/* Le contenu du bandeau monte en place, chaque bloc avec un léger décalage */}
+      <motion.div
+        className="relative z-10"
+        initial="hidden"
+        animate="show"
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } } }}
+      >
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 30, clipPath: "inset(0 0 100% 0)" },
+            show: { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)", transition: { duration: 0.9, ease: EASE } },
+          }}
+        >
+          {children}
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

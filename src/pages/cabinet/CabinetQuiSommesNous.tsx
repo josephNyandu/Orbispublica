@@ -1,3 +1,5 @@
+import imgChantier from '@/assets/images/cabinet-chantier.jpg';
+import imgSignature from '@/assets/images/cabinet-signature.jpg';
 import { firmPositioningParagraph, firmStrategicContextParagraph } from '@/data/siteCopy';
 import { SEO } from '@/components/SEO';
 import { PageHeroBanner } from '@/components/PageHeroBanner';
@@ -28,12 +30,12 @@ export function CabinetQuiSommesNous() {
             </div>
             <div className="grid w-full grid-cols-2 gap-4 md:w-1/2">
               <img
-                src="https://images.unsplash.com/photo-1600249194900-ab1df847da11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjBzaXRlJTIwZW5naW5lZXJpbmclMjBhZnJpY2F8ZW58MXx8fHwxNzYzOTIwMzcxfDA&ixlib=rb-4.1.0&q=80&w=1080"
+                src={imgChantier}
                 alt="Chantier et ingénierie"
                 className="h-48 w-full rounded-lg object-cover shadow-md"
               />
               <img
-                src="https://images.unsplash.com/photo-1763729805496-b5dbf7f00c79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsZWdhbCUyMGRvY3VtZW50cyUyMHNpZ25pbmclMjBwZW58ZW58MXx8fHwxNzYzOTIwMzcxfDA&ixlib=rb-4.1.0&q=80&w=1080"
+                src={imgSignature}
                 alt="Documents et conformité"
                 className="h-48 w-full translate-y-8 rounded-lg object-cover shadow-md"
               />

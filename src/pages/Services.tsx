@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { TiltCard } from "@/components/motion/Motion";
 import { Link } from "react-router";
 import { ChevronRight } from "lucide-react";
 import { useServicePublications } from "@/hooks/useServicePublications";
@@ -29,13 +30,23 @@ export function Services() {
             {visibleServices.map((service, index) => (
               <motion.div
                 key={service.slug}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="anapi-card group flex h-full flex-col bg-white"
+                initial={{ opacity: 0, y: 40, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: (index % 3) * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="h-full"
               >
-                <div className="p-6 md:p-8 flex flex-col h-full">
+                <TiltCard className="group h-full rounded-xl">
+                <div className="anapi-card flex h-full flex-col bg-white">
+                <Link to={`/services/${service.slug}`} className="block aspect-[3/2] overflow-hidden bg-mint" tabIndex={-1} aria-hidden>
+                  <img
+                    src={service.image}
+                    alt=""
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  />
+                </Link>
+                <div className="p-6 md:p-8 flex flex-col flex-1">
                   <h3 className="text-xl font-semibold text-slate-900 mb-4">
                     <Link
                       to={`/services/${service.slug}`}
@@ -58,6 +69,8 @@ export function Services() {
                     </Link>
                   </div>
                 </div>
+                </div>
+                </TiltCard>
               </motion.div>
             ))}
           </div>

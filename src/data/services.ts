@@ -1,3 +1,12 @@
+import imgMarches from '@/assets/images/service-marches-publics.jpg';
+import imgProjets from '@/assets/images/service-projets.jpg';
+import imgFinancements from '@/assets/images/service-financements.jpg';
+import imgDemarches from '@/assets/images/service-demarches.jpg';
+import imgFiscalite from '@/assets/images/service-fiscalite.jpg';
+import imgAudit from '@/assets/images/service-audit.jpg';
+import imgContentieux from '@/assets/images/service-contentieux.jpg';
+import imgFormation from '@/assets/images/service-formation.jpg';
+
 import type { LucideIcon } from "lucide-react";
 import {
   FileText,
@@ -33,8 +42,7 @@ export const servicesData: ServiceDetailEntry[] = [
       "Appui à la commande publique, accompagnement en partenariats public-privé (PPP), veille stratégique et constitution des dossiers de soumission.",
     fullDescription:
       "Nous offrons un accompagnement complet aux entreprises et institutions dans la gestion des marchés publics. Notre expertise couvre l'ensemble du cycle de passation, de la veille stratégique à la gestion des contentieux, en passant par la constitution rigoureuse des dossiers.",
-    image:
-      "https://images.unsplash.com/photo-1763729805496-b5dbf7f00c79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: imgMarches,
     details: [
       "Veille stratégique sur les appels d’offres et opportunités",
       "Assistance à l'inscription ARMP / DGCMP",
@@ -57,8 +65,7 @@ export const servicesData: ServiceDetailEntry[] = [
       "Pilotage et suivi rigoureux des projets sur les plans technique, administratif et financier, y compris dans le cadre de financements externes.",
     fullDescription:
       "Nous intervenons dans le montage, la structuration et la mise en œuvre des projets, en assurant la maîtrise d'ouvrage ainsi que le suivi technique, administratif et financier, qu'ils soient financés sur ressources internes ou par des bailleurs de fonds internationaux et régionaux (UE, Banque mondiale, BAD et autres partenaires).\n\nNotre approche garantit un accompagnement intégré -technique, juridique et opérationnel -tout au long du cycle de vie du projet, en veillant au respect des délais, des budgets et des standards de qualité exigés par les bailleurs",
-    image:
-      "https://images.unsplash.com/photo-1678512680110-19a1e548585c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: imgProjets,
     details: [
       "Montage et structuration stratégique des projets",
       "Dispositif de suivi technique et financier rigoureux",
@@ -83,8 +90,7 @@ export const servicesData: ServiceDetailEntry[] = [
       "Identification des fonds, montage des dossiers et accompagnement institutionnel.",
     fullDescription:
       "Nous accompagnons les entreprises, start-ups et porteurs de projets dans la recherche et la sécurisation de financements. Notre expertise inclut l'identification des fonds disponibles, le montage de dossiers bancables et le coaching pour les négociations.",
-    image:
-      "https://images.unsplash.com/photo-1633158829875-e5316a358c6f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: imgFinancements,
     details: [
       "Identification des mécanismes de financement, subventions et exonérations",
       "Montage et structuration de dossiers techniques, juridiques et financiers",
@@ -108,8 +114,7 @@ export const servicesData: ServiceDetailEntry[] = [
       "Conseil stratégique, création d'entités juridiques et conformité des projets.",
     fullDescription:
       "Nous accompagnons les acteurs publics et privés dans la création, la formalisation et la mise en conformité de leurs structures, en lien avec les exigences des projets de développement et des PPP.\n\nNous centralisons et sécurisons l'ensemble de leurs démarches administratives auprès des autorités compétentes : identification des pièces requises, constitution des dossiers, dépôt, relances et suivi jusqu'à prise de décision administrative.\n\nCette approche vise à réduire les délais, éviter les rejets pour dossiers incomplets et garantir la conformité des procédures réglementaires et institutionnelles.",
-    image:
-      "https://images.unsplash.com/photo-1758691736424-4b4273948341?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: imgDemarches,
     details: [
       "Création et formalisation d'entités (sociétés, SPV, ONG, structures de projet)",
       "Obtention d'agréments, autorisations spéciales, arrêtés ministériels et licences",
@@ -132,8 +137,7 @@ export const servicesData: ServiceDetailEntry[] = [
       "Optimisation des incitations fiscales applicables aux projets",
     fullDescription:
       "Nous accompagnons les acteurs publics et privés dans l'accès et la sécurisation des régimes fiscaux incitatifs (exonérations fiscales, allègements douaniers, etc.) liés aux investissements et aux projets de développement en République Démocratique du Congo.\n\nNotre approche garantit la conformité réglementaire tout en optimisant légalement les avantages fiscaux au service de la viabilité et de la performance des projets.",
-    image:
-      "https://images.unsplash.com/photo-1564939558297-fc396f18e5c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: imgFiscalite,
     details: [
       "Accompagnement dans les procédures d'agrément au Code des investissements (ANAPI)",
       "Appui au montage des dossiers pour les Zones Économiques Spéciales (ZES)",
@@ -157,8 +161,7 @@ export const servicesData: ServiceDetailEntry[] = [
       "Comptabilité, audit interne/externe et gestion des risques.",
     fullDescription:
       "La transparence et la conformité sont essentielles à la réussite des projets publics et privés. Nous assurons l'audit, le contrôle et l'évaluation des dispositifs financiers et organisationnels afin de garantir la fiabilité des informations, la maîtrise des risques et le respect des exigences réglementaires et des partenaires techniques et financiers.",
-    image:
-      "https://images.unsplash.com/photo-1632152053560-2ff69f7981f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: imgAudit,
     details: [
       "Audit financier et organisationnel des projets et programmes",
       "Analyse et renforcement des dispositifs de contrôle interne",
@@ -182,8 +185,7 @@ export const servicesData: ServiceDetailEntry[] = [
       "Assistance dans la gestion des litiges avec l’administration : recours, suivi des créances publiques et médiation.",
     fullDescription:
       "Nous vous accompagnons dans les relations conflictuelles avec les autorités publiques : analyse des décisions, stratégie de recours, préparation des pièces et suivi procédural lorsque c’est pertinent. Nous pouvons également intervenir sur le recouvrement de créances et sur des dispositifs de médiation ou de concertation avec les institutions.",
-    image:
-      "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: imgContentieux,
     details: [
       "Analyse juridique des décisions et actes administratifs",
       "Accompagnement dans les recours administratifs et voies de droit adaptées",
@@ -205,8 +207,7 @@ export const servicesData: ServiceDetailEntry[] = [
       "Renforcement des capacités via des séminaires et ateliers sur la commande publique, gestion et mobilisation des ressources (financement et subvention) des projets.",
     fullDescription:
       "Nous concevons et animons des formations et ateliers sur mesure : marchés publics et PPP, gestion et financement de projets et thématiques connexes. Les contenus combinent cadre réglementaire, retours d’expérience et outils pratiques pour des équipes opérationnelles et des décideurs.",
-    image:
-      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: imgFormation,
     details: [
       "Formations sur la commande publique, la gestion et le financement de projets",
       "Ateliers pratiques et études de cas",

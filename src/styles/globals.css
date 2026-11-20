@@ -341,3 +341,32 @@ html {
   font-family: "Fraunces", ui-serif, Georgia, serif;
   font-optical-sizing: auto;
 }
+
+/* ---------- Animations du site public ---------- */
+@keyframes orbis-marquee {
+  to { transform: translateX(calc(-50% - 0.5rem)); }
+}
+
+/* Reflet qui balaie les boutons au survol */
+.anapi-btn { position: relative; overflow: hidden; isolation: isolate; }
+.anapi-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 0.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.anapi-btn:hover::after { transform: translateX(120%); }
+
+/* Zoom lent façon « Ken Burns » sur les images de fond */
+@keyframes orbis-kenburns {
+  from { transform: scale(1.15) translate3d(0, 0, 0); }
+  to { transform: scale(1) translate3d(-1.5%, -1%, 0); }
+}
+.orbis-kenburns { animation: orbis-kenburns 9s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anapi-btn::after, .orbis-kenburns { animation: none; transition: none; }
+}
