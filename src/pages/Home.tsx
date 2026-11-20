@@ -1,10 +1,23 @@
 import avocatsEnLigneImage from '../assets/avocats-en-ligne-une-solution-rapide-efficace-pour-les-particuliers-et-les-professionnels.jpg';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router';
-import { ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, CheckCircle2, Building2 } from 'lucide-react';
+import logoBanqueMondiale from '../assets/partners/banque-mondiale.svg';
+import logoUnionEuropeenne from '../assets/partners/union-europeenne.svg';
+import logoBad from '../assets/partners/bad.svg';
+import logoRdc from '../assets/partners/rdc-armoiries.svg';
 import { useState, useEffect } from 'react';
 import { useServicePublications } from '@/hooks/useServicePublications';
 import { SEO } from '@/components/SEO';
+
+/** Logos : Wikimedia Commons (domaine public). « Entreprises privées » n'a pas de logo propre. */
+const partners: { name: string; logo?: string }[] = [
+  { name: 'Banque Mondiale', logo: logoBanqueMondiale },
+  { name: 'Union Européenne', logo: logoUnionEuropeenne },
+  { name: 'BAD', logo: logoBad },
+  { name: 'Gouvernement RDC', logo: logoRdc },
+  { name: 'Entreprises Privées' },
+];
 
 export function Home() {
   const { visibleServices } = useServicePublications();
@@ -213,12 +226,19 @@ export function Home() {
         <div className="container mx-auto px-6 md:px-10">
           <h2 className="anapi-title mb-10 text-center text-3xl md:text-4xl">Ils nous font confiance</h2>
           <ul className="m-0 grid list-none grid-cols-2 gap-4 p-0 sm:grid-cols-3 lg:grid-cols-5">
-            {['Banque Mondiale', 'Union Européenne', 'BAD', 'Gouvernement RDC', 'Entreprises Privées'].map((partner) => (
+            {partners.map((partner) => (
               <li
-                key={partner}
-                className="grid min-h-28 place-items-center rounded-xl bg-white p-4 text-center font-[family-name:var(--font-head)] text-lg font-semibold text-blue-600 shadow-[0_2px_10px_rgba(0,0,0,0.08)]"
+                key={partner.name}
+                className="flex min-h-40 flex-col items-center justify-center gap-3 rounded-xl bg-white p-5 text-center shadow-[0_2px_10px_rgba(0,0,0,0.08)] transition-shadow hover:shadow-[0_10px_30px_rgba(3,80,137,0.15)]"
               >
-                {partner}
+                {partner.logo ? (
+                  <img src={partner.logo} alt="" className="h-16 w-auto max-w-full object-contain" loading="lazy" />
+                ) : (
+                  <span className="grid h-16 w-16 place-items-center rounded-full bg-mint text-blue-600" aria-hidden>
+                    <Building2 className="h-8 w-8" />
+                  </span>
+                )}
+                <span className="text-sm font-bold text-blue-600">{partner.name}</span>
               </li>
             ))}
           </ul>
