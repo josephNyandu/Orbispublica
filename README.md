@@ -10,11 +10,10 @@
   Run `npm run dev` to start the development server.
   
 
-  depot GitHub 
+## Comptes utilisés
 
+- **Hébergement (Render) :** compte `basixnyandu@gmail.com`
+- **Dépôt GitHub :** `josephNyandu/Orbispublica`, compte GitHub `joseph.nyandu@itmafrica.com`
+- **Domaine orbispublica.com :** enregistré chez Hostinger
 
-render pour le déploiement 
-  nyandubasix@gmail.com
-
-depot github
-  josephnyandu
+Mise en ligne : après un push sur `main`, ouvrir le service Orbis sur Render et lancer « Manual Deploy → Deploy latest commit » si le déploiement automatique ne s'est pas déclenché.
