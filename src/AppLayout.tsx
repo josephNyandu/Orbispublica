@@ -3,6 +3,7 @@ import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ChatbotLauncher } from './components/ChatbotLauncher';
+import { NewsletterPopup } from './components/NewsletterPopup';
 import { EASE, ScrollProgress } from './components/motion/Motion';
 
 /** Transition entre les pages : l'ancienne page s'efface vers le haut, la nouvelle monte en place. */
@@ -32,6 +33,7 @@ export default function AppLayout() {
         </main>
         <Footer />
         <ChatbotLauncher />
+        <NewsletterPopup />
       </div>
     </MotionConfig>
   );

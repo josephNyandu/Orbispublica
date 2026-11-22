@@ -5,7 +5,7 @@ import heroPanorama from '../assets/images/hero-ville-panorama.jpg';
 import heroTour from '../assets/images/hero-tour-verre.jpg';
 import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from 'motion/react';
 import { Link } from 'react-router';
-import { ChevronRight, CheckCircle2, Building2 } from 'lucide-react';
+import { ChevronRight, ArrowRight, CheckCircle2, Building2 } from 'lucide-react';
 import logoBanqueMondiale from '../assets/partners/banque-mondiale.svg';
 import logoUnionEuropeenne from '../assets/partners/union-europeenne.svg';
 import logoBad from '../assets/partners/bad.svg';
@@ -108,13 +108,13 @@ export function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.15, ease: EASE }}
             >
-              <Link to="/expertises" className="anapi-btn anapi-btn--pill">
-                <ChevronRight className="h-4 w-4" aria-hidden />
-                Nos expertises
+              <Link to="/expertises" className="anapi-btn anapi-btn--split">
+                <span className="anapi-btn__label">Nos expertises</span>
+                <span className="anapi-btn__arrow"><ArrowRight className="h-4 w-4" aria-hidden /></span>
               </Link>
-              <Link to="/contact" className="anapi-btn anapi-btn--pill anapi-btn--gold">
-                <ChevronRight className="h-4 w-4" aria-hidden />
-                Nous contacter
+              <Link to="/contact" className="anapi-btn anapi-btn--split anapi-btn--gold">
+                <span className="anapi-btn__label">Nous contacter</span>
+                <span className="anapi-btn__arrow"><ArrowRight className="h-4 w-4" aria-hidden /></span>
               </Link>
             </motion.div>
           </div>
@@ -270,6 +270,28 @@ export function Home() {
         </div>
       </section>
 
+      {/* Méthode : quatre étapes de l'analyse au suivi */}
+      <section className="bg-white py-16 md:py-24">
+        <div className="container mx-auto px-6 md:px-10">
+          <h2 className="anapi-title mb-12 max-w-2xl text-3xl md:text-4xl">
+            <WordsReveal text="Une démarche claire, de l’analyse au suivi" inView gap={0.05} />
+          </h2>
+          <Stagger className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4" gap={0.1}>
+            {[
+              ['Diagnostic', 'Analyse de votre situation juridique, réglementaire et institutionnelle.'],
+              ['Structuration', 'Montage du dossier, du projet ou du dispositif de conformité adapté à votre besoin.'],
+              ['Mise en œuvre', 'Accompagnement dans la passation, l’exécution et la conduite de vos opérations.'],
+              ['Suivi', 'Suivi des engagements, rapports et recommandations pour la suite.'],
+            ].map(([title, text]) => (
+              <StaggerItem key={title} className="border-t-4 border-blue-600 pt-5">
+                <h3 className="mb-2 text-xl font-semibold text-slate-900">{title}</h3>
+                <p className="leading-relaxed text-slate-600">{text}</p>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
       {/* Partenaires : bande de logos qui défile en continu (pause au survol) */}
       <section className="bg-white py-16 md:py-20">
         <div className="container mx-auto px-6 md:px-10">
@@ -311,13 +333,13 @@ export function Home() {
           </Reveal>
           <Reveal delay={0.4} from="zoom">
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
-              <Link to="/contact" className="anapi-btn">
-                <ChevronRight className="h-4 w-4" aria-hidden />
-                Démarrer une collaboration
+              <Link to="/contact" className="anapi-btn anapi-btn--split">
+                <span className="anapi-btn__label">Démarrer une collaboration</span>
+                <span className="anapi-btn__arrow"><ArrowRight className="h-4 w-4" aria-hidden /></span>
               </Link>
-              <Link to="/nos-realisations" className="anapi-btn anapi-btn--gold">
-                <ChevronRight className="h-4 w-4" aria-hidden />
-                Voir nos réalisations
+              <Link to="/nos-realisations" className="anapi-btn anapi-btn--split anapi-btn--gold">
+                <span className="anapi-btn__label">Voir nos réalisations</span>
+                <span className="anapi-btn__arrow"><ArrowRight className="h-4 w-4" aria-hidden /></span>
               </Link>
             </div>
           </Reveal>
