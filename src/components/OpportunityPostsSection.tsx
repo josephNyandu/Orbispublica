@@ -1,6 +1,6 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
-import { ChevronLeft, ChevronRight, ExternalLink, Megaphone } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import {
   fetchPublicOpportunityPosts,
   type OpportunityPost,
@@ -17,10 +17,12 @@ import {
   statusAccentBorder,
   statusDotClass,
   statusLabelFor,
+  statusTextClass,
   type ConsultationStatusFilterKey,
+  type ConsultationStatusKey,
 } from "@/lib/consultationStatus";
 
-const POSTS_PER_PAGE = 5;
+const POSTS_PER_PAGE = 3;
 
 type Props = {
   category: OpportunityCategoryId;
@@ -38,11 +40,20 @@ function formatDateFr(iso: string | null): string {
   });
 }
 
+function formatDateShort(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+type SortKey = "recent" | "deadline";
+
 export function OpportunityPostsSection({ category, className = "" }: Props) {
   const [posts, setPosts] = useState<OpportunityPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<ConsultationStatusFilterKey>("");
+  const [sort, setSort] = useState<SortKey>("recent");
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -69,14 +80,23 @@ export function OpportunityPostsSection({ category, className = "" }: Props) {
 
   useEffect(() => {
     setPage(1);
-  }, [category, statusFilter]);
+  }, [category, statusFilter, sort]);
 
   const filteredPosts = useMemo(() => {
-    return posts.filter((p) => {
+    const list = posts.filter((p) => {
       const key = consultationStatusFromDeadline(p.consultation_deadline);
       return statusFilter === "" || statusFilter === key;
     });
-  }, [posts, statusFilter]);
+    const publishedTime = (p: OpportunityPost) => new Date(p.published_at ?? p.created_at ?? 0).getTime() || 0;
+    if (sort === "deadline") {
+      return [...list].sort((a, b) => {
+        const da = a.consultation_deadline || "9999-12-31";
+        const db = b.consultation_deadline || "9999-12-31";
+        return da.localeCompare(db) || publishedTime(b) - publishedTime(a);
+      });
+    }
+    return [...list].sort((a, b) => publishedTime(b) - publishedTime(a));
+  }, [posts, statusFilter, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filteredPosts.length / POSTS_PER_PAGE));
   const safePage = Math.min(Math.max(1, page), totalPages);
@@ -128,201 +148,145 @@ export function OpportunityPostsSection({ category, className = "" }: Props) {
   }
 
   const label = OPPORTUNITY_CATEGORY_LABELS[category];
-  const rowRubricLabel =
-    category === "opportunites" ? "Publication cabinet" : OPPORTUNITY_CATEGORY_LABELS[category];
+  const filterOptions = CONSULTATION_STATUS_FILTER_OPTIONS.filter((opt) => opt.key !== "non_precise");
+  const countFor = (key: ConsultationStatusFilterKey) =>
+    key === ""
+      ? posts.length
+      : posts.filter((p) => consultationStatusFromDeadline(p.consultation_deadline) === key).length;
+  const gridCols = "md:grid-cols-[minmax(0,1fr)_13rem_9rem_12rem_9rem]";
 
   return (
     <section className={`py-10 md:py-12 bg-slate-50 border-y border-slate-100 ${className}`}>
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div>
-                        <h2 className="anapi-title text-2xl md:text-3xl">
-              Publications — {label}
-            </h2>
-          </div>
-          <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600">
-            <Megaphone className="size-3.5 text-blue-600 shrink-0" aria-hidden />
-            {posts.length} publication{posts.length > 1 ? "s" : ""}
-          </div>
+          <h2 className="anapi-title text-2xl md:text-3xl">Publications — {label}</h2>
+          <p className="text-slate-600">{posts.length} publication{posts.length > 1 ? "s" : ""}</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm space-y-8">
-          <div>
-            <p className="text-sm font-semibold text-slate-800 mb-3">Statut de consultation</p>
-            <div className="flex flex-wrap gap-2">
-              {CONSULTATION_STATUS_FILTER_OPTIONS.map((opt) => (
+        <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 border-b border-slate-300">
+          <div className="flex flex-wrap gap-x-7">
+            {filterOptions.map((opt) => {
+              const active = statusFilter === opt.key;
+              return (
                 <button
                   key={opt.key || "all"}
                   type="button"
                   onClick={() => setStatusFilter(opt.key)}
-                  className={`rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-wide transition ${
-                    statusFilter === opt.key
-                      ? "border-blue-600 bg-blue-600 text-white shadow-sm"
-                      : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                  aria-pressed={active}
+                  className={`-mb-px flex items-center gap-2 border-b-2 pb-3 text-base transition-colors ${
+                    active
+                      ? "border-blue-900 font-semibold text-blue-900"
+                      : "border-transparent text-slate-600 hover:text-slate-900"
                   }`}
                 >
+                  {opt.key ? <span className={`size-3 rounded-full ${statusDotClass(opt.key)}`} aria-hidden /> : null}
                   {opt.label}
+                  <span className="tabular-nums text-slate-400">{countFor(opt.key)}</span>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
-
-          {filteredPosts.length === 0 ? (
-            <p className="text-center text-sm text-slate-600 py-10">
-              Aucune annonce ne correspond à ce statut. Choisissez « Tous » ou un autre filtre.
-            </p>
-          ) : (
-            <div className="space-y-4">
-              <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-inner">
-                <table className="min-w-[920px] w-full text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-200 bg-slate-100/80 text-xs font-bold uppercase tracking-wider text-slate-600">
-                      <th className="w-10 px-3 py-3" aria-label="Statut" />
-                      <th className="px-3 py-3 min-w-[12rem]">Objet</th>
-                      <th className="px-3 py-3 w-36">Organisme</th>
-                      <th className="px-3 py-3 w-32">Lieu</th>
-                      <th className="px-3 py-3 w-40 whitespace-nowrap">Date limite</th>
-                      <th className="px-3 py-3 w-40">Résumé</th>
-                      <th className="px-3 py-3 w-28 whitespace-nowrap">Publié</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white">
-                    {paginatedPosts.map((row) => {
-                    const statusKey = consultationStatusFromDeadline(row.consultation_deadline);
-                    return (
-                      <Fragment key={row.id}>
-                        <tr
-                          className={`border-b border-slate-200 border-l-4 ${statusAccentBorder(statusKey)} bg-slate-100/90 text-xs text-slate-600`}
-                        >
-                          <td colSpan={7} className="px-3 py-2.5">
-                            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-                              <span className="shrink-0 font-bold uppercase tracking-widest text-slate-500">
-                                {rowRubricLabel}
-                              </span>
-                              <span className="font-mono text-sm font-bold text-slate-800">Réf. {row.id}</span>
-                              <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700">
-                                <span
-                                  className={`size-2 shrink-0 rounded-full ${statusDotClass(statusKey)}`}
-                                  aria-hidden
-                                />
-                                {statusLabelFor(statusKey)}
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-slate-200 hover:bg-slate-50/80 transition-colors">
-                          <td className="px-3 py-3 align-middle">
-                            <span
-                              className={`mx-auto block size-2.5 rounded-full ${statusDotClass(statusKey)}`}
-                              title={statusLabelFor(statusKey)}
-                            />
-                          </td>
-                          <td className="px-3 py-3 align-top">
-                            <Link
-                              to={`/opportunite/${row.id}`}
-                              state={{ opportunityPost: row } satisfies OpportunityPostNavState}
-                              className="group inline-flex items-start gap-1.5 text-slate-900 font-semibold leading-snug hover:text-blue-700"
-                            >
-                              <span>{row.title}</span>
-                              {row.link_url ? (
-                                <ExternalLink
-                                  className="size-3.5 shrink-0 text-blue-500 opacity-70 group-hover:opacity-100 mt-0.5"
-                                  aria-hidden
-                                />
-                              ) : null}
-                            </Link>
-                          </td>
-                          <td className="px-3 py-3 align-top text-slate-700">
-                            {row.organisme?.trim() ? row.organisme : "—"}
-                          </td>
-                          <td className="px-3 py-3 align-top text-slate-700">
-                            {row.lieu?.trim() ? row.lieu : "—"}
-                          </td>
-                          <td className="px-3 py-3 align-top text-slate-700 tabular-nums whitespace-nowrap">
-                            {row.consultation_deadline ? formatDeadlineFr(row.consultation_deadline) : "—"}
-                          </td>
-                          <td className="px-3 py-3 align-top text-slate-600">
-                            {row.summary ? (
-                              <span className="line-clamp-3">{row.summary}</span>
-                            ) : (
-                              <span className="text-slate-400">—</span>
-                            )}
-                          </td>
-                          <td className="px-3 py-3 align-top text-slate-600 tabular-nums whitespace-nowrap">
-                            {row.published_at ? formatDateFr(row.published_at) : "—"}
-                          </td>
-                        </tr>
-                      </Fragment>
-                    );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {totalPages > 1 ? (
-                <nav
-                  className="flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between"
-                  aria-label="Pagination des annonces"
-                >
-                  <p className="text-sm text-slate-600">
-                    Affichage de{" "}
-                    <span className="font-semibold tabular-nums text-slate-800">{pageStart + 1}</span> à{" "}
-                    <span className="font-semibold tabular-nums text-slate-800">
-                      {Math.min(pageStart + POSTS_PER_PAGE, filteredPosts.length)}
-                    </span>{" "}
-                    sur <span className="font-semibold tabular-nums text-slate-800">{filteredPosts.length}</span>{" "}
-                    — page{" "}
-                    <span className="font-semibold tabular-nums text-slate-800">
-                      {safePage} / {totalPages}
-                    </span>
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2">
-                    {atFirstPage ? (
-                      <span className="inline-flex h-9 cursor-default select-none items-center gap-1 rounded-lg border border-dashed border-slate-200 bg-slate-50/80 px-3 text-sm font-medium text-slate-400">
-                        <ChevronLeft className="size-4 shrink-0 opacity-50" aria-hidden />
-                        Début de liste
-                      </span>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setPage((p) => {
-                            const cur = Math.min(Math.max(1, p), totalPages);
-                            return Math.max(1, cur - 1);
-                          })
-                        }
-                        className="inline-flex h-9 items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
-                      >
-                        <ChevronLeft className="size-4 shrink-0" aria-hidden />
-                        Précédent
-                      </button>
-                    )}
-                    {atLastPage ? (
-                      <span className="inline-flex h-9 cursor-default select-none items-center gap-1 rounded-lg border border-dashed border-slate-200 bg-slate-50/80 px-3 text-sm font-medium text-slate-400">
-                        Fin de liste
-                        <ChevronRight className="size-4 shrink-0 opacity-50" aria-hidden />
-                      </span>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setPage((p) => {
-                            const cur = Math.min(Math.max(1, p), totalPages);
-                            return Math.min(totalPages, cur + 1);
-                          })
-                        }
-                        className="inline-flex h-9 items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
-                      >
-                        Suivant
-                        <ChevronRight className="size-4 shrink-0" aria-hidden />
-                      </button>
-                    )}
-                  </div>
-                </nav>
-              ) : null}
-            </div>
-          )}
+          <div className="flex items-center gap-4 pb-3 text-sm text-slate-500">
+            <span>Trier</span>
+            {(
+              [
+                ["recent", "Plus récentes"],
+                ["deadline", "Date limite"],
+              ] as const
+            ).map(([key, text]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setSort(key)}
+                className={`transition-colors ${
+                  sort === key ? "font-semibold text-slate-900 underline underline-offset-4" : "hover:text-slate-900"
+                }`}
+              >
+                {text}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {filteredPosts.length === 0 ? (
+          <p className="py-12 text-center text-sm text-slate-600">
+            Aucune annonce ne correspond à ce statut. Choisissez « Tous » ou un autre filtre.
+          </p>
+        ) : (
+          <div>
+            <div className={`hidden gap-x-6 py-3 pl-6 pr-5 text-sm font-semibold text-slate-500 md:grid ${gridCols}`}>
+              <div>Objet</div>
+              <div>Organisme</div>
+              <div>Lieu</div>
+              <div>Date limite</div>
+              <div>Publié</div>
+            </div>
+
+            <ul className="space-y-3 pt-3 md:pt-0">
+              {paginatedPosts.map((row) => {
+                const statusKey = consultationStatusFromDeadline(row.consultation_deadline);
+                const meta = [row.organisme?.trim(), row.lieu?.trim()].filter(Boolean).join(" — ");
+                return (
+                  <li
+                    key={row.id}
+                    className={`grid gap-x-6 gap-y-3 border-l-4 bg-white px-5 py-5 ${statusAccentBorder(statusKey)} ${gridCols}`}
+                  >
+                    <div className="min-w-0">
+                      <Link
+                        to={`/opportunite/${row.id}`}
+                        state={{ opportunityPost: row } satisfies OpportunityPostNavState}
+                        className="text-lg font-semibold leading-snug text-slate-900 hover:text-blue-700 hover:underline"
+                      >
+                        {row.title}
+                        {row.link_url ? <ExternalLink className="ml-1.5 inline size-4 text-blue-600" aria-hidden /> : null}
+                      </Link>
+                      {meta ? <p className="mt-1.5 text-sm text-slate-500 md:hidden">{meta}</p> : null}
+                    </div>
+                    <p className="hidden text-slate-700 md:block">{row.organisme?.trim() ? row.organisme : "—"}</p>
+                    <p className="hidden text-slate-700 md:block">{row.lieu?.trim() ? row.lieu : "—"}</p>
+                    <div>
+                      <p className={`inline-flex items-center gap-2.5 text-base font-semibold ${statusTextClass(statusKey)}`}>
+                        <span className={`size-4 rounded-full ${statusDotClass(statusKey)}`} aria-hidden />
+                        {statusLabelFor(statusKey)}
+                      </p>
+                      {row.consultation_deadline ? (
+                        <p className="mt-1 text-sm tabular-nums text-slate-700">
+                          jusqu’au {formatDeadlineFr(row.consultation_deadline)}
+                        </p>
+                      ) : null}
+                    </div>
+                    <p className="tabular-nums text-slate-700">
+                      {row.published_at ? formatDateShort(row.published_at) : "—"}
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {totalPages > 1 ? (
+              <nav className="flex justify-end gap-2 pt-5" aria-label="Pagination des annonces">
+                <button
+                  type="button"
+                  disabled={atFirstPage}
+                  onClick={() => setPage(Math.max(1, safePage - 1))}
+                  className="inline-flex h-9 items-center gap-1 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 disabled:cursor-default disabled:border-dashed disabled:text-slate-400 disabled:hover:bg-white"
+                >
+                  <ChevronLeft className="size-4 shrink-0" aria-hidden />
+                  Précédent
+                </button>
+                <button
+                  type="button"
+                  disabled={atLastPage}
+                  onClick={() => setPage(Math.min(totalPages, safePage + 1))}
+                  className="inline-flex h-9 items-center gap-1 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 disabled:cursor-default disabled:border-dashed disabled:text-slate-400 disabled:hover:bg-white"
+                >
+                  Suivant
+                  <ChevronRight className="size-4 shrink-0" aria-hidden />
+                </button>
+              </nav>
+            ) : null}
+          </div>
+        )}
       </div>
     </section>
   );

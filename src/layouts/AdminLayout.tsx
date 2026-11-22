@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router";
-import { Bell, LogOut, Home, Megaphone } from "lucide-react";
+import { Bell, LogOut, Home, Megaphone, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { logout } from "@/lib/api";
@@ -157,6 +157,26 @@ export default function AdminLayout() {
                   <TooltipContent side="bottom">
                     Inscrits au Registre pour suivre les publications « Appels d'offres ».
                   </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex">
+                      <Button variant="ghost" size="sm" className="h-8 gap-1 px-2" asChild>
+                        <NavLink
+                          to="/admin/clients"
+                          className={() =>
+                            location.pathname.startsWith("/admin/clients") || location.pathname.startsWith("/admin/dossiers")
+                              ? "text-blue-700 font-semibold"
+                              : "text-slate-600"
+                          }
+                        >
+                          <Users className="size-3.5 opacity-70" aria-hidden />
+                          Clients
+                        </NavLink>
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">Comptes clients, dossiers, documents et messages.</TooltipContent>
                 </Tooltip>
               </nav>
             </div>

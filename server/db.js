@@ -1,4 +1,5 @@
 import { createDb } from "./pg.js";
+import { clientDdl } from "./clients.js";
 
 let dbSingleton;
 
@@ -73,7 +74,7 @@ export async function initDb(existingPool) {
     `CREATE INDEX IF NOT EXISTS idx_opportunity_history_created ON opportunity_post_history (created_at)`,
     `CREATE INDEX IF NOT EXISTS idx_opportunity_feed_subscribers_cat ON opportunity_feed_subscribers (category, created_at DESC)`,
   ];
-  for (const stmt of ddl) {
+  for (const stmt of [...ddl, ...clientDdl]) {
     await dbSingleton.exec(stmt);
   }
 

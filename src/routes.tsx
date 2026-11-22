@@ -35,6 +35,16 @@ import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { ContactInfoAdmin } from "./pages/admin/ContactInfoAdmin";
 import { OpportunitesPublicationAdmin } from "./pages/admin/OpportunitesPublicationAdmin";
 import { OpportunitesPublicationHistory } from "./pages/admin/OpportunitesPublicationHistory";
+import ClientLayout from "./layouts/ClientLayout";
+import { ClientDossiers } from "./pages/client/ClientDossiers";
+import { ClientDossierDetail } from "./pages/client/ClientDossierDetail";
+import { ClientDocuments } from "./pages/client/ClientDocuments";
+import { ClientNotifications } from "./pages/client/ClientNotifications";
+import { ClientMessages } from "./pages/client/ClientMessages";
+import { ClientAccount } from "./pages/client/ClientAccount";
+import { ClientsAdmin } from "./pages/admin/ClientsAdmin";
+import { ClientDetailAdmin } from "./pages/admin/ClientDetailAdmin";
+import { DossierDetailAdmin } from "./pages/admin/DossierDetailAdmin";
 import { OpportunitesAbonnementsAdmin } from "./pages/admin/OpportunitesAbonnementsAdmin";
 
 function RealisationsAdminPage() {
@@ -81,6 +91,30 @@ function OpportunitesPublicationHistoryPage() {
   return (
     <ProtectedRoute>
       <OpportunitesPublicationHistory />
+    </ProtectedRoute>
+  );
+}
+
+function ClientsAdminPage() {
+  return (
+    <ProtectedRoute>
+      <ClientsAdmin />
+    </ProtectedRoute>
+  );
+}
+
+function ClientDetailAdminPage() {
+  return (
+    <ProtectedRoute>
+      <ClientDetailAdmin />
+    </ProtectedRoute>
+  );
+}
+
+function DossierDetailAdminPage() {
+  return (
+    <ProtectedRoute>
+      <DossierDetailAdmin />
     </ProtectedRoute>
   );
 }
@@ -140,6 +174,18 @@ export const router = createBrowserRouter([
       { path: "recherche", Component: SearchResults },
       { path: "login", Component: Login },
       { path: "registre", Component: Registre },
+      {
+        path: "espace-client",
+        Component: ClientLayout,
+        children: [
+          { index: true, Component: ClientDossiers },
+          { path: "dossiers/:id", Component: ClientDossierDetail },
+          { path: "documents", Component: ClientDocuments },
+          { path: "notifications", Component: ClientNotifications },
+          { path: "messages", Component: ClientMessages },
+          { path: "compte", Component: ClientAccount },
+        ],
+      },
     ],
   },
   {
@@ -148,6 +194,9 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: AdminDashboardPage },
       { path: "coordonnees", Component: ContactInfoAdminPage },
+      { path: "clients", Component: ClientsAdminPage },
+      { path: "clients/:id", Component: ClientDetailAdminPage },
+      { path: "dossiers/:id", Component: DossierDetailAdminPage },
       { path: "realisations", Component: RealisationsAdminPage },
       { path: "expertises", Component: ExpertisesPublicationAdminPage },
       { path: "opportunites/historique", Component: OpportunitesPublicationHistoryPage },

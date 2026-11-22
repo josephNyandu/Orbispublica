@@ -37,29 +37,43 @@ export function consultationStatusFromDeadline(
   return "en_cours";
 }
 
+/** Vert : en cours — jaune : bientôt expirée — rouge : expirée — gris : date non précisée. */
 export function statusDotClass(key: ConsultationStatusKey): string {
   switch (key) {
     case "en_cours":
-      return "bg-emerald-500";
+      return "bg-green-600";
     case "moins_3_jours":
-      return "bg-amber-500";
+      return "bg-yellow-400";
     case "expiree":
-      return "bg-slate-400";
+      return "bg-red-600";
     case "non_precise":
-      return "bg-green-500";
+      return "bg-slate-400";
   }
 }
 
 export function statusAccentBorder(key: ConsultationStatusKey): string {
   switch (key) {
     case "en_cours":
-      return "border-l-emerald-500";
+      return "border-l-green-600";
     case "moins_3_jours":
-      return "border-l-amber-500";
+      return "border-l-yellow-400";
     case "expiree":
-      return "border-l-slate-400";
+      return "border-l-red-600";
     case "non_precise":
-      return "border-l-green-500";
+      return "border-l-slate-400";
+  }
+}
+
+export function statusTextClass(key: ConsultationStatusKey): string {
+  switch (key) {
+    case "en_cours":
+      return "text-green-700";
+    case "moins_3_jours":
+      return "text-yellow-700";
+    case "expiree":
+      return "text-red-700";
+    case "non_precise":
+      return "text-slate-600";
   }
 }
 

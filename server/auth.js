@@ -58,7 +58,7 @@ export function verifyAuthToken(token) {
 export function authMiddleware(req, res, next) {
   const token = req.cookies?.[COOKIE_NAME];
   const payload = verifyAuthToken(token);
-  if (!payload) {
+  if (!payload || payload.role !== "admin") {
     return res.status(401).json({ error: "Non autorisé" });
   }
   req.admin = payload;

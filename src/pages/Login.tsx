@@ -4,6 +4,7 @@ import { Link, useNavigate, useSearchParams } from "react-router";
 import { Lock, Mail } from "lucide-react";
 import { toast } from "sonner@2.0.3";
 import { login } from "@/lib/api";
+import { clientLogin } from "@/lib/clientApi";
 import { AuthPortalTabs } from "@/components/AuthPortalTabs";
 import { PageHeroBanner } from "@/components/PageHeroBanner";
 import { getLoginHref, isExternalLoginConfigured } from "@/lib/loginUrl";
@@ -42,9 +43,15 @@ export function Login() {
 
   const onSubmit = async (data: LoginForm) => {
     try {
+      if (await clientLogin(data.email.trim(), data.password, data.remember)) {
+        toast.success("Connexion réussie");
+        const clientTarget = redirectTo.startsWith("/espace-client") ? redirectTo : "/espace-client";
+        navigate(clientTarget, { replace: true });
+        return;
+      }
       await login(data.email, data.password, data.remember);
       toast.success("Connexion réussie");
-      navigate(redirectTo, { replace: true });
+      navigate(rawRedirect?.startsWith("/admin") ? redirectTo : "/admin", { replace: true });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Connexion impossible");
     }
@@ -66,7 +73,7 @@ export function Login() {
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Connexion</h1>
           </div>
           <p className="text-lg text-slate-300 max-w-2xl">
-            Accédez à l’espace d’administration pour gérer les réalisations publiées sur le site.
+            Suivez vos dossiers et retrouvez vos documents.
           </p>
         </div>
       </PageHeroBanner>
@@ -136,7 +143,7 @@ export function Login() {
                   className="text-sm font-medium text-blue-600 hover:text-blue-700"
                   onClick={() =>
                     toast.info(
-                      "Réinitialisation du mot de passe : utilisez les variables d’environnement sur le serveur ou contactez l’administrateur système."
+                      "Pour réinitialiser votre mot de passe, contactez votre conseiller ORBIS PUBLICA."
                     )
                   }
                 >

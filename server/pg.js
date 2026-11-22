@@ -12,6 +12,12 @@ const TABLES_WITH_ID = [
   "opportunity_posts",
   "opportunity_post_history",
   "opportunity_feed_subscribers",
+  "clients",
+  "dossiers",
+  "dossier_etapes",
+  "dossier_documents",
+  "client_notifications",
+  "client_messages",
 ];
 
 function toPg(sql) {

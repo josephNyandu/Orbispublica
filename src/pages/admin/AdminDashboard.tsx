@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { motion } from "motion/react";
-import { Bell, Briefcase, ChevronRight, ImageIcon, MapPin, Megaphone } from "lucide-react";
+import { Bell, Briefcase, ChevronRight, ImageIcon, MapPin, Megaphone, Users } from "lucide-react";
 import { AdminInfoTooltip } from "@/components/admin/AdminInfoTooltip";
 
 const sections = [
@@ -43,6 +43,13 @@ const sections = [
       "Liste des personnes inscrites via le Registre pour suivre les publications de la page Appels d’offres.",
     icon: Bell,
     info: "Les visiteurs s’inscrivent sur le site public (page Registre). Vous pouvez consulter les e-mails et retirer une entrée si besoin.",
+  },
+  {
+    to: "/admin/clients",
+    title: "Clients et dossiers",
+    description: "Créer les comptes clients, ouvrir les dossiers, faire avancer les étapes et déposer les documents.",
+    icon: Users,
+    info: "Chaque client se connecte à son espace pour suivre ses dossiers, télécharger ses documents et écrire à son conseiller.",
   },
 ] as const;
 

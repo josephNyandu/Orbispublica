@@ -71,7 +71,8 @@ function figmaAssetResolver() {
       outDir: 'dist',
     },
     server: {
-      port: 3000,
+      port: 3010,
+      strictPort: true,
       open: true,
       proxy: {
         "/api": {

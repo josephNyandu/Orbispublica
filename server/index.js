@@ -28,6 +28,7 @@ import {
   getCookieName,
   verifyAuthToken,
 } from "./auth.js";
+import { registerClientRoutes } from "./clients.js";
 import { ensureUploadDirs, adminImageUpload, adminDocumentUpload, uploadsPublicRoot } from "./adminUpload.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -793,6 +794,8 @@ app.delete("/api/admin/opportunity-feed-subscribers/:id", authMiddleware, async 
   }
   res.json({ ok: true });
 });
+
+registerClientRoutes(app, { getDb, authMiddleware, cookieOpts, cookieSecure });
 
 /** --- Production: static --- */
 const buildDir = path.join(__dirname, "..", "dist");
