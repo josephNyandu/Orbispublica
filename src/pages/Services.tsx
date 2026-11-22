@@ -26,19 +26,19 @@ export function Services() {
 
       <section className="py-12 md:py-20 bg-mint">
         <div className="container mx-auto px-6 md:px-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {visibleServices.map((service, index) => (
               <motion.div
                 key={service.slug}
                 initial={{ opacity: 0, y: 40, scale: 0.96 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ delay: (index % 3) * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: (index % 2) * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className="h-full"
               >
                 <TiltCard className="group h-full rounded-xl">
-                <div className="anapi-card flex h-full flex-col bg-white">
-                <Link to={`/services/${service.slug}`} className="block aspect-[3/2] overflow-hidden bg-mint" tabIndex={-1} aria-hidden>
+                <div className="anapi-card flex h-full flex-col bg-white sm:flex-row">
+                <Link to={`/services/${service.slug}`} className="block aspect-[3/2] shrink-0 overflow-hidden bg-mint sm:aspect-auto sm:w-2/5" tabIndex={-1} aria-hidden>
                   <img
                     src={service.image}
                     alt=""

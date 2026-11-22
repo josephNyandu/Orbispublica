@@ -76,21 +76,31 @@ export function Home() {
           style={reduce ? undefined : { y: textY, opacity: textOpacity }}
         >
           <div className="max-w-3xl">
-            <h1 className="mb-6 text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl">
-              <WordsReveal text="Projets," start={0.2} />{' '}
-              <WordsReveal text="Partenariats" start={0.35} className="text-blue-400" />
-              <br />
-              <WordsReveal text="& Financements" start={0.55} />
+            <h1 className="mb-8 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+              <WordsReveal text="Conformité" start={0.2} />{' '}
+              <span className="text-blue-400" aria-hidden>•</span>{' '}
+              <WordsReveal text="Commande publique" start={0.35} className="text-blue-400" />{' '}
+              <span className="text-blue-400" aria-hidden>•</span>{' '}
+              <WordsReveal text="Ingénierie de projets" start={0.55} />
             </h1>
 
-            <motion.p
-              className="mb-8 max-w-2xl text-base leading-relaxed text-white/90 md:text-lg"
+            <motion.ul
+              className="mb-8 max-w-3xl space-y-3 text-base leading-relaxed text-white/90 md:text-lg"
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.95, ease: EASE }}
             >
-              Expertise en PPP, marchés publics et projets de développement, intégrant la mobilisation de financements, subventions et exonérations, au service de la mise en œuvre de projets en RDC et en Afrique.
-            </motion.p>
+              {[
+                'Expertise en audit juridique, éthique, gouvernance, prévention et gestion des risques.',
+                'Accès, passation et exécution des marchés publics et des partenariats public‑privé.',
+                'Montage, structuration et développement de projets, ainsi que la mobilisation des ressources nécessaires à leur mise en œuvre',
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-blue-400" aria-hidden />
+                  <span style={{ textWrap: 'balance' }}>{item}</span>
+                </li>
+              ))}
+            </motion.ul>
 
             <motion.div
               className="flex flex-col gap-3 sm:flex-row"
@@ -141,22 +151,19 @@ export function Home() {
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
               <Reveal from="left">
-                <h2 className="anapi-title mb-8 max-w-xl text-3xl md:text-4xl">
-                  Un partenaire de référence pour structurer et garantir la viabilité des projets à fort impact
+                <h2 className="anapi-title mb-8 max-w-xl text-3xl md:text-4xl" style={{ textWrap: 'balance' }}>
+                  Un partenaire stratégique pour la conformité, la commande publique et le développement des projets
                 </h2>
               </Reveal>
 
               <Reveal from="left" delay={0.15}>
-                <div className="max-w-xl space-y-5 text-justify">
+                <div className="max-w-xl space-y-5 text-left" style={{ textWrap: 'pretty' }}>
                   <p className="text-lg leading-relaxed text-slate-800">
-                    Dans un contexte marqué par une exigence croissante de transparence et de performance,{' '}
-                    <strong className="text-blue-600">ORBIS PUBLICA</strong> accompagne les acteurs publics et privés dans
-                    la structuration, la sécurisation et la mise en œuvre efficace de projets en partenariats
-                    public-privé (PPP), marchés publics et projets de développement.
+                    Face à la complexité des cadres réglementaires, aux exigences de bonne gouvernance et aux enjeux liés à la réalisation des investissements et aux initiatives de développement,{' '}
+                    <strong className="text-blue-600">ORBIS PUBLICA</strong> accompagne les acteurs publics et privés dans leurs démarches de sécurisation juridique, d&apos;accompagnement institutionnel et de développement économique.
                   </p>
                   <p className="leading-relaxed text-slate-600">
-                    Nous transformons les défis réglementaires et administratifs en opportunités stratégiques, dans
-                    une approche orientée conformité, performance et résultats.
+                    Son intervention privilégie une approche intégrée, combinant conseil spécialisé, appui technique et solutions opérationnelles, au plus près des enjeux et des objectifs poursuivis par ses partenaires.
                   </p>
                 </div>
               </Reveal>
@@ -232,12 +239,12 @@ export function Home() {
             </Reveal>
           </div>
 
-          <Stagger className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" gap={0.08}>
+          <Stagger className="grid grid-cols-1 gap-6 lg:grid-cols-2" gap={0.08}>
             {visibleServices.map((service) => (
               <StaggerItem key={service.slug} className="h-full">
                 <TiltCard className="group h-full rounded-xl">
-                  <Link to={`/services/${service.slug}`} className="anapi-card flex h-full flex-col bg-white">
-                    <div className="aspect-[3/2] overflow-hidden bg-mint">
+                  <Link to={`/services/${service.slug}`} className="anapi-card flex h-full flex-col bg-white sm:flex-row">
+                    <div className="aspect-[3/2] shrink-0 overflow-hidden bg-mint sm:aspect-auto sm:w-2/5">
                       <img
                         src={service.image}
                         alt=""
@@ -245,8 +252,8 @@ export function Home() {
                         className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                       />
                     </div>
-                    <div className="flex flex-1 flex-col p-6">
-                      <h3 className="mb-2 text-xl font-semibold leading-snug text-slate-900 transition-colors group-hover:text-blue-600">
+                    <div className="flex flex-1 flex-col justify-center p-6 md:p-8">
+                      <h3 className="mb-3 text-xl font-semibold leading-snug text-slate-900 transition-colors group-hover:text-blue-600">
                         {service.title}
                       </h3>
                       <p className="mb-5 flex-1 text-sm leading-relaxed text-slate-600">{service.description}</p>
