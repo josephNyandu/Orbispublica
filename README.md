@@ -17,3 +17,9 @@
 - **Domaine orbispublica.com :** enregistré chez Hostinger
 
 Mise en ligne : après un push sur `main`, ouvrir le service Orbis sur Render et lancer « Manual Deploy → Deploy latest commit » si le déploiement automatique ne s'est pas déclenché.
+
+## Base de données (Neon)
+
+Le serveur Express utilise Neon (Postgres). Définir `DATABASE_URL` (chaîne de connexion Neon) dans `.env` en local et dans les variables d'environnement du service Render. Les tables sont créées au démarrage.
+
+Reprise des données de l'ancienne base SQLite : `npm run import:sqlite-to-neon -- --dry-run`, puis `npm run import:sqlite-to-neon`.

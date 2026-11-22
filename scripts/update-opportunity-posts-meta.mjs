@@ -92,7 +92,7 @@ function loadJsonRecords(filePath) {
   return data;
 }
 
-function main() {
+async function main() {
   const args = parseArgs(process.argv);
   if (args.help) {
     console.log(`Usage:
@@ -111,7 +111,7 @@ Options:
     process.exit(0);
   }
 
-  initDb();
+  await initDb();
   const db = getDb();
   const now = new Date().toISOString();
 
@@ -136,7 +136,7 @@ Options:
     const where = missingMetaWhere();
     const sql = `SELECT id, category, title, status, organisme, lieu, consultation_deadline FROM opportunity_posts ${where} ORDER BY id`;
     const rows =
-      categoryFilter == null ? db.prepare(sql).all() : db.prepare(sql).all(categoryFilter);
+      categoryFilter == null ? await db.prepare(sql).all() : await db.prepare(sql).all(categoryFilter);
     const template = rows.map((r) => ({
       id: r.id,
       _titre: String(r.title || "").slice(0, 200),
@@ -159,7 +159,7 @@ Options:
     const where = missingMetaWhere();
     const sql = `SELECT id, category, title, organisme, lieu, consultation_deadline FROM opportunity_posts ${where} ORDER BY id`;
     const rows =
-      categoryFilter == null ? db.prepare(sql).all() : db.prepare(sql).all(categoryFilter);
+      categoryFilter == null ? await db.prepare(sql).all() : await db.prepare(sql).all(categoryFilter);
 
     console.log(
       `Annonces avec au moins un champ manquant (organisme / lieu / date limite)${categoryFilter != null ? `, catégorie « ${categoryFilter} »` : ""}${args.includeDrafts ? ", tous statuts" : ", statut publié seulement"} : ${rows.length}\n`
@@ -180,17 +180,17 @@ Options:
   }
 
   const records = loadJsonRecords(args.file);
-  const select = db.prepare(
-    "SELECT id, category, organisme, lieu, consultation_deadline FROM opportunity_posts WHERE id = ?"
-  );
-  const update = db.prepare(
-    `UPDATE opportunity_posts SET organisme = ?, lieu = ?, consultation_deadline = ?, updated_at = ? WHERE id = ?`
-  );
-
   let applied = 0;
   let skipped = 0;
 
-  const tx = db.transaction((items) => {
+  const tx = async (items) => {
+   await db.transaction(async (trx) => {
+    const select = trx.prepare(
+      "SELECT id, category, organisme, lieu, consultation_deadline FROM opportunity_posts WHERE id = ?"
+    );
+    const update = trx.prepare(
+      `UPDATE opportunity_posts SET organisme = ?, lieu = ?, consultation_deadline = ?, updated_at = ? WHERE id = ?`
+    );
     for (const item of items) {
       const id = Number(item?.id);
       if (!Number.isInteger(id) || id < 1) {
@@ -199,7 +199,7 @@ Options:
         continue;
       }
 
-      const row = select.get(id);
+      const row = await select.get(id);
       if (!row) {
         console.warn(`id=${id} : aucune ligne en base, ignoré.`);
         skipped++;
@@ -267,18 +267,20 @@ Options:
         continue;
       }
 
-      update.run(nextOrg ?? null, nextLieu ?? null, nextDeadline ?? null, now, id);
+      await update.run(nextOrg ?? null, nextLieu ?? null, nextDeadline ?? null, now, id);
       applied++;
       console.log(`id=${id} : mis à jour (organisme, lieu, date limite selon fichier).`);
     }
-  });
+   });
+  };
 
-  tx(records);
+  await tx(records);
   console.log(`\nTerminé : ${applied} ligne(s) modifiée(s), ${skipped} ignorée(s) ou sans changement.`);
 }
 
 try {
-  main();
+  await main();
+  process.exit(0);
 } catch (e) {
   console.error(e?.message || e);
   process.exit(1);

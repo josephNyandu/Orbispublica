@@ -32,13 +32,13 @@ import { ensureUploadDirs, adminImageUpload, adminDocumentUpload, uploadsPublicR
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-initDb();
+await initDb();
 ensureUploadDirs();
 
 /** Active les publications planifiées dont l’heure est passée (également appelé sur les lectures API). */
-function runScheduledOpportunityPublishing() {
+async function runScheduledOpportunityPublishing() {
   try {
-    processDueScheduledPosts(getDb());
+    await processDueScheduledPosts(getDb());
   } catch (e) {
     console.error("[opportunity_posts] processDueScheduledPosts:", e);
   }
@@ -83,6 +83,20 @@ function startKeepAliveService() {
 startKeepAliveService();
 
 const app = express();
+
+/** Express 4 ne capte pas les promesses rejetées : on transmet l'erreur à next() pour les handlers async. */
+for (const method of ["get", "post", "put", "patch", "delete"]) {
+  const original = app[method].bind(app);
+  app[method] = (route, ...handlers) =>
+    original(
+      route,
+      ...handlers.map((h) =>
+        typeof h === "function" && h.constructor.name === "AsyncFunction"
+          ? (req, res, next) => h(req, res, next).catch(next)
+          : h
+      )
+    );
+}
 const PORT = Number(process.env.PORT) || 3001;
 
 app.use(express.json({ limit: "1mb" }));
@@ -133,13 +147,13 @@ function parseBody(body) {
 }
 
 /** --- Public --- */
-app.get("/api/health", (req, res) => {
+app.get("/api/health", async (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
-app.get("/api/realisations", (req, res) => {
+app.get("/api/realisations", async (req, res) => {
   const db = getDb();
-  const rows = db
+  const rows = await db
     .prepare(
       `SELECT * FROM realisations WHERE published = 1 ORDER BY sort_order ASC, id ASC`
     )
@@ -147,30 +161,30 @@ app.get("/api/realisations", (req, res) => {
   res.json(rows.map(rowToApi));
 });
 
-app.get("/api/service-publications", (req, res) => {
+app.get("/api/service-publications", async (req, res) => {
   res.setHeader("Cache-Control", "private, no-store, max-age=0, must-revalidate");
   const db = getDb();
-  const rows = db.prepare(`SELECT * FROM service_publications ORDER BY sort_order ASC, slug ASC`).all();
+  const rows = await db.prepare(`SELECT * FROM service_publications ORDER BY sort_order ASC, slug ASC`).all();
   /** Toujours renvoyer `content_overrides` pour que le front fusionne comme en admin (listes masquent les brouillons). */
   res.json(rows.map((row) => servicePublicationRowToApi(row)));
 });
 
-app.get("/api/site-contact", (req, res) => {
+app.get("/api/site-contact", async (req, res) => {
   res.setHeader("Cache-Control", "private, no-store, max-age=0, must-revalidate");
   const db = getDb();
-  res.json(getSiteContactMerged(db));
+  res.json(await getSiteContactMerged(db));
 });
 
 /** Publications « Opportunités » (pages publiques) — uniquement les billets publiés. */
 /** Recherche globale (réalisations, opportunités publiées, expertises publiées). */
-app.get("/api/search", (req, res) => {
+app.get("/api/search", async (req, res) => {
   res.setHeader("Cache-Control", "private, no-store, max-age=0, must-revalidate");
   const db = getDb();
-  runScheduledOpportunityPublishing();
+  await runScheduledOpportunityPublishing();
   const q = String(req.query.q ?? req.query.query ?? "");
   const limit = req.query.limit !== undefined ? Number(req.query.limit) : undefined;
   try {
-    const payload = searchPublicSite(db, q, limit);
+    const payload = await searchPublicSite(db, q, limit);
     res.json(payload);
   } catch (e) {
     if (e && typeof e === "object" && "code" in e && e.code === "QUERY_TOO_LONG") {
@@ -183,15 +197,15 @@ app.get("/api/search", (req, res) => {
   }
 });
 
-app.get("/api/opportunity-posts", (req, res) => {
+app.get("/api/opportunity-posts", async (req, res) => {
   res.setHeader("Cache-Control", "private, no-store, max-age=0, must-revalidate");
   const db = getDb();
-  runScheduledOpportunityPublishing();
+  await runScheduledOpportunityPublishing();
   const category = String(req.query.category ?? "").trim();
   if (!category || !isValidOpportunityCategory(category)) {
     return res.status(400).json({ error: "Paramètre category requis ou invalide" });
   }
-  const rows = db
+  const rows = await db
     .prepare(
       `SELECT * FROM opportunity_posts
        WHERE category = ? AND status = 'published'
@@ -213,7 +227,7 @@ function isPlausibleEmail(s) {
 }
 
 /** Inscription veille e-mail — pour l’instant uniquement la rubrique « appels d’offres » (category opportunites). */
-app.post("/api/opportunity-feed/subscribe", (req, res) => {
+app.post("/api/opportunity-feed/subscribe", async (req, res) => {
   try {
     const category = String(req.body?.category ?? "opportunites").trim();
     if (category !== "opportunites") {
@@ -230,7 +244,7 @@ app.post("/api/opportunity-feed/subscribe", (req, res) => {
     const now = new Date().toISOString();
     const db = getDb();
     try {
-      const info = db
+      const info = await db
         .prepare(
           `INSERT INTO opportunity_feed_subscribers (category, email, name, created_at)
            VALUES (?, ?, ?, ?)`
@@ -238,7 +252,7 @@ app.post("/api/opportunity-feed/subscribe", (req, res) => {
         .run(category, email, name, now);
       return res.status(201).json({ ok: true, id: Number(info.lastInsertRowid) });
     } catch (e) {
-      if (e && typeof e === "object" && "code" in e && e.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      if (e && typeof e === "object" && "code" in e && e.code === "23505") {
         return res.status(200).json({ ok: true, already: true });
       }
       throw e;
@@ -249,16 +263,16 @@ app.post("/api/opportunity-feed/subscribe", (req, res) => {
   }
 });
 
-app.get("/api/opportunity-posts/:id", (req, res) => {
+app.get("/api/opportunity-posts/:id", async (req, res) => {
   try {
     res.setHeader("Cache-Control", "private, no-store, max-age=0, must-revalidate");
     const db = getDb();
-    runScheduledOpportunityPublishing();
+    await runScheduledOpportunityPublishing();
     const id = Number(req.params.id);
     if (!Number.isInteger(id) || id < 1) {
       return res.status(400).json({ error: "Identifiant invalide" });
     }
-    const row = db
+    const row = await db
       .prepare(`SELECT * FROM opportunity_posts WHERE id = ? AND status = 'published'`)
       .get(id);
     if (!row) {
@@ -276,7 +290,7 @@ app.get("/api/opportunity-posts/:id", (req, res) => {
 });
 
 /** --- Auth --- */
-app.get("/api/auth/me", (req, res) => {
+app.get("/api/auth/me", async (req, res) => {
   const token = req.cookies?.[getCookieName()];
   const payload = verifyAuthToken(token);
   if (!payload) {
@@ -285,7 +299,7 @@ app.get("/api/auth/me", (req, res) => {
   res.json({ ok: true, email: process.env.ADMIN_EMAIL || null, isSiteAdmin: true });
 });
 
-app.post("/api/auth/login", (req, res) => {
+app.post("/api/auth/login", async (req, res) => {
   const { email, password, remember } = req.body || {};
   if (!email || !password) {
     return res.status(400).json({ error: "E-mail et mot de passe requis" });
@@ -299,7 +313,7 @@ app.post("/api/auth/login", (req, res) => {
   res.json({ ok: true });
 });
 
-app.post("/api/auth/logout", (req, res) => {
+app.post("/api/auth/logout", async (req, res) => {
   res.clearCookie(getCookieName(), {
     path: "/",
     httpOnly: true,
@@ -310,22 +324,22 @@ app.post("/api/auth/logout", (req, res) => {
 });
 
 /** --- Admin: realisations --- */
-app.get("/api/admin/realisations", authMiddleware, (req, res) => {
+app.get("/api/admin/realisations", authMiddleware, async (req, res) => {
   const db = getDb();
-  const rows = db
+  const rows = await db
     .prepare(`SELECT * FROM realisations ORDER BY sort_order ASC, id ASC`)
     .all();
   res.json(rows.map(rowToApi));
 });
 
-app.post("/api/admin/realisations", authMiddleware, (req, res) => {
+app.post("/api/admin/realisations", authMiddleware, async (req, res) => {
   const db = getDb();
   const b = parseBody(req.body);
   if (!b.title || !b.desc || !b.category || !b.image) {
     return res.status(400).json({ error: "Champs requis : title, desc, category, image" });
   }
   const now = new Date().toISOString();
-  const info = db
+  const info = await db
     .prepare(
       `INSERT INTO realisations (title, description, category, image, published, sort_order, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
@@ -340,17 +354,17 @@ app.post("/api/admin/realisations", authMiddleware, (req, res) => {
       now,
       now
     );
-  const row = db.prepare("SELECT * FROM realisations WHERE id = ?").get(info.lastInsertRowid);
+  const row = await db.prepare("SELECT * FROM realisations WHERE id = ?").get(info.lastInsertRowid);
   res.status(201).json(rowToApi(row));
 });
 
-app.patch("/api/admin/realisations/:id", authMiddleware, (req, res) => {
+app.patch("/api/admin/realisations/:id", authMiddleware, async (req, res) => {
   const id = Number(req.params.id);
   if (!Number.isFinite(id)) {
     return res.status(400).json({ error: "ID invalide" });
   }
   const db = getDb();
-  const existing = db.prepare("SELECT * FROM realisations WHERE id = ?").get(id);
+  const existing = await db.prepare("SELECT * FROM realisations WHERE id = ?").get(id);
   if (!existing) {
     return res.status(404).json({ error: "Non trouvé" });
   }
@@ -373,7 +387,7 @@ app.patch("/api/admin/realisations/:id", authMiddleware, (req, res) => {
     return res.status(400).json({ error: "Champs invalides" });
   }
   const now = new Date().toISOString();
-  db.prepare(
+  await db.prepare(
     `UPDATE realisations SET title = ?, description = ?, category = ?, image = ?, published = ?, sort_order = ?, updated_at = ?
      WHERE id = ?`
   ).run(
@@ -386,17 +400,17 @@ app.patch("/api/admin/realisations/:id", authMiddleware, (req, res) => {
     now,
     id
   );
-  const row = db.prepare("SELECT * FROM realisations WHERE id = ?").get(id);
+  const row = await db.prepare("SELECT * FROM realisations WHERE id = ?").get(id);
   res.json(rowToApi(row));
 });
 
-app.delete("/api/admin/realisations/:id", authMiddleware, (req, res) => {
+app.delete("/api/admin/realisations/:id", authMiddleware, async (req, res) => {
   const id = Number(req.params.id);
   if (!Number.isFinite(id)) {
     return res.status(400).json({ error: "ID invalide" });
   }
   const db = getDb();
-  const info = db.prepare("DELETE FROM realisations WHERE id = ?").run(id);
+  const info = await db.prepare("DELETE FROM realisations WHERE id = ?").run(id);
   if (info.changes === 0) {
     return res.status(404).json({ error: "Non trouvé" });
   }
@@ -444,19 +458,19 @@ app.post(
 );
 
 /** --- Admin: expertises (publication) --- */
-app.get("/api/admin/service-publications", authMiddleware, (req, res) => {
+app.get("/api/admin/service-publications", authMiddleware, async (req, res) => {
   const db = getDb();
-  const rows = db.prepare(`SELECT * FROM service_publications ORDER BY sort_order ASC, slug ASC`).all();
+  const rows = await db.prepare(`SELECT * FROM service_publications ORDER BY sort_order ASC, slug ASC`).all();
   res.json(rows.map(servicePublicationRowToApi));
 });
 
-app.patch("/api/admin/service-publications/:slug", authMiddleware, (req, res) => {
+app.patch("/api/admin/service-publications/:slug", authMiddleware, async (req, res) => {
   const slug = String(req.params.slug ?? "").trim();
   if (!slug) {
     return res.status(400).json({ error: "Slug invalide" });
   }
   const db = getDb();
-  const existing = db.prepare("SELECT * FROM service_publications WHERE slug = ?").get(slug);
+  const existing = await db.prepare("SELECT * FROM service_publications WHERE slug = ?").get(slug);
   if (!existing) {
     return res.status(404).json({ error: "Expertise inconnue" });
   }
@@ -483,7 +497,7 @@ app.patch("/api/admin/service-publications/:slug", authMiddleware, (req, res) =>
     }
   }
   const now = new Date().toISOString();
-  db.prepare(
+  await db.prepare(
     `UPDATE service_publications SET published = ?, sort_order = ?, content_json = ?, updated_at = ? WHERE slug = ?`
   ).run(
     published ? 1 : 0,
@@ -492,20 +506,20 @@ app.patch("/api/admin/service-publications/:slug", authMiddleware, (req, res) =>
     now,
     slug
   );
-  const row = db.prepare("SELECT * FROM service_publications WHERE slug = ?").get(slug);
+  const row = await db.prepare("SELECT * FROM service_publications WHERE slug = ?").get(slug);
   res.json(servicePublicationRowToApi(row));
 });
 
-app.get("/api/admin/site-contact", authMiddleware, (req, res) => {
+app.get("/api/admin/site-contact", authMiddleware, async (req, res) => {
   const db = getDb();
-  res.json(getSiteContactMerged(db));
+  res.json(await getSiteContactMerged(db));
 });
 
-app.patch("/api/admin/site-contact", authMiddleware, (req, res) => {
+app.patch("/api/admin/site-contact", authMiddleware, async (req, res) => {
   try {
     const parsed = parseSiteContactBody(req.body);
     const db = getDb();
-    saveSiteContactToDb(db, parsed);
+    await saveSiteContactToDb(db, parsed);
     res.json(parsed);
   } catch (e) {
     return res.status(400).json({ error: String(e?.message || e) });
@@ -513,10 +527,10 @@ app.patch("/api/admin/site-contact", authMiddleware, (req, res) => {
 });
 
 /** --- Admin: publications Opportunités --- */
-app.get("/api/admin/opportunity-posts", authMiddleware, (req, res) => {
+app.get("/api/admin/opportunity-posts", authMiddleware, async (req, res) => {
   const db = getDb();
-  runScheduledOpportunityPublishing();
-  const rows = db
+  await runScheduledOpportunityPublishing();
+  const rows = await db
     .prepare(
       `SELECT * FROM opportunity_posts
        ORDER BY datetime(updated_at) DESC, id DESC`
@@ -525,11 +539,11 @@ app.get("/api/admin/opportunity-posts", authMiddleware, (req, res) => {
   res.json(rows.map(opportunityPostRowToApi));
 });
 
-app.get("/api/admin/opportunity-posts/history", authMiddleware, (req, res) => {
+app.get("/api/admin/opportunity-posts/history", authMiddleware, async (req, res) => {
   const db = getDb();
-  runScheduledOpportunityPublishing();
+  await runScheduledOpportunityPublishing();
   const limit = Math.min(500, Math.max(1, Number(req.query.limit) || 200));
-  const rows = db
+  const rows = await db
     .prepare(
       `SELECT h.*, p.title AS post_title, p.category AS post_category
        FROM opportunity_post_history h
@@ -550,9 +564,9 @@ app.get("/api/admin/opportunity-posts/history", authMiddleware, (req, res) => {
   );
 });
 
-app.post("/api/admin/opportunity-posts", authMiddleware, (req, res) => {
+app.post("/api/admin/opportunity-posts", authMiddleware, async (req, res) => {
   const db = getDb();
-  runScheduledOpportunityPublishing();
+  await runScheduledOpportunityPublishing();
   const merged = parseOpportunityPostBody(req.body, null);
   if (!merged.title) {
     return res.status(400).json({ error: "Titre requis" });
@@ -585,7 +599,7 @@ app.post("/api/admin/opportunity-posts", authMiddleware, (req, res) => {
     scheduled_for = null;
   }
 
-  const info = db
+  const info = await db
     .prepare(
       `INSERT INTO opportunity_posts
        (category, title, summary, body, link_url, image_url, attachments_json, consultation_deadline, organisme, lieu, status, scheduled_for, published_at, sort_order, created_at, updated_at)
@@ -610,24 +624,24 @@ app.post("/api/admin/opportunity-posts", authMiddleware, (req, res) => {
       now
     );
   const id = info.lastInsertRowid;
-  logOpportunityHistory(db, id, "created", {
+  await logOpportunityHistory(db, id, "created", {
     title: merged.title,
     category: merged.category,
     status,
     scheduled_for,
   });
-  const row = db.prepare("SELECT * FROM opportunity_posts WHERE id = ?").get(id);
+  const row = await db.prepare("SELECT * FROM opportunity_posts WHERE id = ?").get(id);
   res.status(201).json(opportunityPostRowToApi(row));
 });
 
-app.patch("/api/admin/opportunity-posts/:id", authMiddleware, (req, res) => {
+app.patch("/api/admin/opportunity-posts/:id", authMiddleware, async (req, res) => {
   const id = Number(req.params.id);
   if (!Number.isFinite(id)) {
     return res.status(400).json({ error: "ID invalide" });
   }
   const db = getDb();
-  runScheduledOpportunityPublishing();
-  const existing = db.prepare("SELECT * FROM opportunity_posts WHERE id = ?").get(id);
+  await runScheduledOpportunityPublishing();
+  const existing = await db.prepare("SELECT * FROM opportunity_posts WHERE id = ?").get(id);
   if (!existing) {
     return res.status(404).json({ error: "Publication introuvable" });
   }
@@ -680,7 +694,7 @@ app.patch("/api/admin/opportunity-posts/:id", authMiddleware, (req, res) => {
     scheduled_for = null;
   }
 
-  db.prepare(
+  await db.prepare(
     `UPDATE opportunity_posts SET
       category = ?, title = ?, summary = ?, body = ?, link_url = ?, image_url = ?, attachments_json = ?,
       consultation_deadline = ?, organisme = ?, lieu = ?, status = ?, scheduled_for = ?, published_at = ?, sort_order = ?, updated_at = ?
@@ -704,47 +718,47 @@ app.patch("/api/admin/opportunity-posts/:id", authMiddleware, (req, res) => {
     id
   );
 
-  logOpportunityHistory(db, id, "updated", {
+  await logOpportunityHistory(db, id, "updated", {
     title: merged.title,
     category: merged.category,
     status,
     scheduled_for,
   });
 
-  const row = db.prepare("SELECT * FROM opportunity_posts WHERE id = ?").get(id);
+  const row = await db.prepare("SELECT * FROM opportunity_posts WHERE id = ?").get(id);
   res.json(opportunityPostRowToApi(row));
 });
 
-app.delete("/api/admin/opportunity-posts/:id", authMiddleware, (req, res) => {
+app.delete("/api/admin/opportunity-posts/:id", authMiddleware, async (req, res) => {
   const id = Number(req.params.id);
   if (!Number.isFinite(id)) {
     return res.status(400).json({ error: "ID invalide" });
   }
   const db = getDb();
-  const existing = db.prepare("SELECT * FROM opportunity_posts WHERE id = ?").get(id);
+  const existing = await db.prepare("SELECT * FROM opportunity_posts WHERE id = ?").get(id);
   if (!existing) {
     return res.status(404).json({ error: "Publication introuvable" });
   }
   const now = new Date().toISOString();
-  logOpportunityHistory(db, null, "deleted", {
+  await logOpportunityHistory(db, null, "deleted", {
     former_post_id: id,
     title: existing.title,
     category: existing.category,
     at: now,
   });
-  db.prepare("DELETE FROM opportunity_posts WHERE id = ?").run(id);
+  await db.prepare("DELETE FROM opportunity_posts WHERE id = ?").run(id);
   res.json({ ok: true });
 });
 
 /** Abonnés e-mail à la liste des appels d’offres (category opportunites). */
-app.get("/api/admin/opportunity-feed-subscribers", authMiddleware, (req, res) => {
+app.get("/api/admin/opportunity-feed-subscribers", authMiddleware, async (req, res) => {
   try {
     const category = String(req.query.category ?? "opportunites").trim();
     if (!isValidOpportunityCategory(category)) {
       return res.status(400).json({ error: "Catégorie invalide" });
     }
     const db = getDb();
-    const rows = db
+    const rows = await db
       .prepare(
         `SELECT id, category, email, name, created_at
          FROM opportunity_feed_subscribers
@@ -767,13 +781,13 @@ app.get("/api/admin/opportunity-feed-subscribers", authMiddleware, (req, res) =>
   }
 });
 
-app.delete("/api/admin/opportunity-feed-subscribers/:id", authMiddleware, (req, res) => {
+app.delete("/api/admin/opportunity-feed-subscribers/:id", authMiddleware, async (req, res) => {
   const id = Number(req.params.id);
   if (!Number.isInteger(id) || id < 1) {
     return res.status(400).json({ error: "Identifiant invalide" });
   }
   const db = getDb();
-  const info = db.prepare("DELETE FROM opportunity_feed_subscribers WHERE id = ?").run(id);
+  const info = await db.prepare("DELETE FROM opportunity_feed_subscribers WHERE id = ?").run(id);
   if (info.changes === 0) {
     return res.status(404).json({ error: "Abonné introuvable" });
   }
@@ -784,7 +798,7 @@ app.delete("/api/admin/opportunity-feed-subscribers/:id", authMiddleware, (req, 
 const buildDir = path.join(__dirname, "..", "dist");
 if (fs.existsSync(buildDir)) {
   app.use(express.static(buildDir));
-  app.get("*", (req, res, next) => {
+  app.get("*", async (req, res, next) => {
     if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) {
       return next();
     }

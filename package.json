@@ -32,7 +32,6 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@supabase/supabase-js": "^2.103.3",
     "bcryptjs": "^3.0.2",
-    "better-sqlite3": "^11.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "*",
     "cmdk": "^1.1.1",
@@ -46,6 +45,7 @@
     "motion": "^12.38.0",
     "multer": "^2.1.1",
     "next-themes": "^0.4.6",
+    "pg": "^8.23.1",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
@@ -67,6 +67,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
+    "pg-mem": "^3.0.14",
     "tailwindcss": "4.1.12",
     "typescript": "^6.0.2",
     "vite": "6.3.5"
@@ -81,6 +82,7 @@
     "opportunity:meta:dry-run": "node scripts/update-opportunity-posts-meta.mjs --dry-run",
     "opportunity:meta:export": "node scripts/update-opportunity-posts-meta.mjs --export-template scripts/opportunity-posts-meta-a-remplir.json --include-drafts",
     "opportunity:meta:apply": "node scripts/update-opportunity-posts-meta.mjs --file scripts/opportunity-posts-meta-a-remplir.json",
-    "import:sqlite-to-supabase": "node scripts/sqlite-to-supabase.mjs"
+    "import:sqlite-to-supabase": "node scripts/sqlite-to-supabase.mjs",
+    "import:sqlite-to-neon": "node scripts/sqlite-to-neon.mjs"
   }
 }

@@ -83,7 +83,7 @@ function expertiseDisplayTitle(slug, contentJson) {
  * @param {number} [limit]
  * @returns {{ query: string, results: SearchHit[] }}
  */
-export function searchPublicSite(db, rawQuery, limit = DEFAULT_LIMIT) {
+export async function searchPublicSite(db, rawQuery, limit = DEFAULT_LIMIT) {
   const query = String(rawQuery ?? "").trim();
   if (!query) {
     return { query: "", results: [] };
@@ -105,7 +105,7 @@ export function searchPublicSite(db, rawQuery, limit = DEFAULT_LIMIT) {
   /** @type {SearchHit[]} */
   const results = [];
 
-  const realRows = db
+  const realRows = await db
     .prepare(
       `SELECT id, title, description, category FROM realisations
        WHERE published = 1 AND (
@@ -129,7 +129,7 @@ export function searchPublicSite(db, rawQuery, limit = DEFAULT_LIMIT) {
     });
   }
 
-  const oppRows = db
+  const oppRows = await db
     .prepare(
       `SELECT id, category, title, summary, body FROM opportunity_posts
        WHERE status = 'published' AND (
@@ -156,7 +156,7 @@ export function searchPublicSite(db, rawQuery, limit = DEFAULT_LIMIT) {
     });
   }
 
-  const expRows = db
+  const expRows = await db
     .prepare(
       `SELECT slug, content_json FROM service_publications
        WHERE published = 1 AND (

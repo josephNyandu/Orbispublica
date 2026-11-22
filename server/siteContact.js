@@ -146,10 +146,10 @@ export function parseSiteContactBody(body) {
 }
 
 /**
- * @param {import("better-sqlite3").Database} db
+ * @param {import("./pg.js").createDb} db
  */
-export function getSiteContactFromDb(db) {
-  const row = db.prepare(`SELECT value_json FROM site_settings WHERE key = ?`).get(CONTACT_SETTINGS_KEY);
+export async function getSiteContactFromDb(db) {
+  const row = await db.prepare(`SELECT value_json FROM site_settings WHERE key = ?`).get(CONTACT_SETTINGS_KEY);
   if (!row?.value_json) return null;
   try {
     const parsed = JSON.parse(row.value_json);
@@ -160,21 +160,21 @@ export function getSiteContactFromDb(db) {
 }
 
 /**
- * @param {import("better-sqlite3").Database} db
+ * @param {import("./pg.js").createDb} db
  */
-export function getSiteContactMerged(db) {
-  const fromDb = getSiteContactFromDb(db);
+export async function getSiteContactMerged(db) {
+  const fromDb = await getSiteContactFromDb(db);
   return fromDb ?? DEFAULT_SITE_CONTACT;
 }
 
 /**
- * @param {import("better-sqlite3").Database} db
+ * @param {import("./pg.js").createDb} db
  * @param {ReturnType<typeof parseSiteContactBody>} value
  */
-export function saveSiteContactToDb(db, value) {
+export async function saveSiteContactToDb(db, value) {
   const now = new Date().toISOString();
   const json = JSON.stringify(value);
-  db.prepare(
+  await db.prepare(
     `INSERT INTO site_settings (key, value_json, updated_at) VALUES (?, ?, ?)
      ON CONFLICT(key) DO UPDATE SET value_json = excluded.value_json, updated_at = excluded.updated_at`
   ).run(CONTACT_SETTINGS_KEY, json, now);

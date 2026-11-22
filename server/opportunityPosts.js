@@ -18,9 +18,9 @@ export function isValidOpportunityCategory(cat) {
  * Passe en « published » les billets planifiés dont l’heure est atteinte.
  * @param {Database} db
  */
-export function processDueScheduledPosts(db) {
+export async function processDueScheduledPosts(db) {
   const now = new Date().toISOString();
-  const due = db
+  const due = await db
     .prepare(
       `SELECT id FROM opportunity_posts
        WHERE status = 'scheduled'
@@ -30,25 +30,25 @@ export function processDueScheduledPosts(db) {
     .all(now);
   if (due.length === 0) return 0;
 
-  const upd = db.prepare(
-    `UPDATE opportunity_posts
-     SET status = 'published', published_at = COALESCE(published_at, ?), updated_at = ?
-     WHERE id = ?`
-  );
-  const log = db.prepare(
-    `INSERT INTO opportunity_post_history (post_id, event_type, detail_json, created_at)
-     VALUES (?, 'auto_published', ?, ?)`
-  );
-
   let n = 0;
-  const tx = db.transaction(() => {
+  await db.transaction(async (tx) => {
     for (const row of due) {
-      upd.run(now, now, row.id);
-      log.run(row.id, JSON.stringify({ at: now }), now);
+      await tx
+        .prepare(
+          `UPDATE opportunity_posts
+           SET status = 'published', published_at = COALESCE(published_at, ?), updated_at = ?
+           WHERE id = ?`
+        )
+        .run(now, now, row.id);
+      await tx
+        .prepare(
+          `INSERT INTO opportunity_post_history (post_id, event_type, detail_json, created_at)
+           VALUES (?, 'auto_published', ?, ?)`
+        )
+        .run(row.id, JSON.stringify({ at: now }), now);
       n += 1;
     }
   });
-  tx();
   return n;
 }
 
@@ -155,9 +155,9 @@ export function opportunityHistoryRowToApi(row) {
  * @param {string} eventType
  * @param {Record<string, unknown> | null} detail
  */
-export function logOpportunityHistory(db, postId, eventType, detail) {
+export async function logOpportunityHistory(db, postId, eventType, detail) {
   const now = new Date().toISOString();
-  db.prepare(
+  await db.prepare(
     `INSERT INTO opportunity_post_history (post_id, event_type, detail_json, created_at)
      VALUES (?, ?, ?, ?)`
   ).run(postId, eventType, detail ? JSON.stringify(detail) : null, now);

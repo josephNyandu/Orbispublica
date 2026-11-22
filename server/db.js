@@ -1,30 +1,18 @@
-import Database from "better-sqlite3";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import { createDb } from "./pg.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const dbPath = process.env.SQLITE_PATH || path.join(__dirname, "..", "data", "orbis.db");
+let dbSingleton;
 
 export function getDb() {
   return dbSingleton;
 }
 
-let dbSingleton;
+/** Crée les tables Postgres (Neon) si besoin et insère les données initiales. */
+export async function initDb(existingPool) {
+  dbSingleton = createDb(existingPool);
 
-export function initDb() {
-  const dir = path.dirname(dbPath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  dbSingleton = new Database(dbPath);
-  dbSingleton.pragma("journal_mode = WAL");
-
-  dbSingleton.exec(`
-    CREATE TABLE IF NOT EXISTS realisations (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+  const ddl = [
+    `CREATE TABLE IF NOT EXISTS realisations (
+      id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       description TEXT NOT NULL,
       category TEXT NOT NULL,
@@ -33,35 +21,21 @@ export function initDb() {
       sort_order INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
-    );
-  `);
-
-  dbSingleton.exec(`
-    CREATE TABLE IF NOT EXISTS service_publications (
+    )`,
+    `CREATE TABLE IF NOT EXISTS service_publications (
       slug TEXT PRIMARY KEY,
       published INTEGER NOT NULL DEFAULT 1,
       sort_order INTEGER NOT NULL DEFAULT 0,
-      updated_at TEXT NOT NULL
-    );
-  `);
-
-  const spCols = dbSingleton.prepare(`PRAGMA table_info(service_publications)`).all();
-  const hasContentJson = spCols.some((c) => c.name === "content_json");
-  if (!hasContentJson) {
-    dbSingleton.exec(`ALTER TABLE service_publications ADD COLUMN content_json TEXT`);
-  }
-
-  dbSingleton.exec(`
-    CREATE TABLE IF NOT EXISTS site_settings (
+      updated_at TEXT NOT NULL,
+      content_json TEXT
+    )`,
+    `CREATE TABLE IF NOT EXISTS site_settings (
       key TEXT PRIMARY KEY,
       value_json TEXT NOT NULL,
       updated_at TEXT NOT NULL
-    );
-  `);
-
-  dbSingleton.exec(`
-    CREATE TABLE IF NOT EXISTS opportunity_posts (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+    )`,
+    `CREATE TABLE IF NOT EXISTS opportunity_posts (
+      id SERIAL PRIMARY KEY,
       category TEXT NOT NULL,
       title TEXT NOT NULL,
       summary TEXT NOT NULL DEFAULT '',
@@ -72,116 +46,67 @@ export function initDb() {
       published_at TEXT,
       sort_order INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
-    );
-  `);
-
-  dbSingleton.exec(`
-    CREATE TABLE IF NOT EXISTS opportunity_post_history (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      updated_at TEXT NOT NULL,
+      image_url TEXT,
+      attachments_json TEXT,
+      consultation_deadline TEXT,
+      organisme TEXT,
+      lieu TEXT
+    )`,
+    `CREATE TABLE IF NOT EXISTS opportunity_post_history (
+      id SERIAL PRIMARY KEY,
       post_id INTEGER,
       event_type TEXT NOT NULL,
       detail_json TEXT,
       created_at TEXT NOT NULL
-    );
-  `);
-
-  dbSingleton.exec(
-    `CREATE INDEX IF NOT EXISTS idx_opportunity_posts_category_status
-     ON opportunity_posts (category, status, sort_order)`
-  );
-  dbSingleton.exec(
-    `CREATE INDEX IF NOT EXISTS idx_opportunity_posts_scheduled
-     ON opportunity_posts (status, scheduled_for)`
-  );
-  dbSingleton.exec(
-    `CREATE INDEX IF NOT EXISTS idx_opportunity_history_created ON opportunity_post_history (created_at)`
-  );
-
-  dbSingleton.exec(`
-    CREATE TABLE IF NOT EXISTS opportunity_feed_subscribers (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+    )`,
+    `CREATE TABLE IF NOT EXISTS opportunity_feed_subscribers (
+      id SERIAL PRIMARY KEY,
       category TEXT NOT NULL,
       email TEXT NOT NULL,
       name TEXT,
       created_at TEXT NOT NULL,
-      UNIQUE(email, category)
-    );
-  `);
-  dbSingleton.exec(
-    `CREATE INDEX IF NOT EXISTS idx_opportunity_feed_subscribers_cat
-     ON opportunity_feed_subscribers (category, datetime(created_at) DESC)`
-  );
-
-  /** Ancien identifiant « appels-offres » → segment d’URL /opportunites */
-  try {
-    dbSingleton
-      .prepare(`UPDATE opportunity_posts SET category = 'opportunites' WHERE category = 'appels-offres'`)
-      .run();
-  } catch {
-    /* ignore */
+      UNIQUE (email, category)
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_opportunity_posts_category_status ON opportunity_posts (category, status, sort_order)`,
+    `CREATE INDEX IF NOT EXISTS idx_opportunity_posts_scheduled ON opportunity_posts (status, scheduled_for)`,
+    `CREATE INDEX IF NOT EXISTS idx_opportunity_history_created ON opportunity_post_history (created_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_opportunity_feed_subscribers_cat ON opportunity_feed_subscribers (category, created_at DESC)`,
+  ];
+  for (const stmt of ddl) {
+    await dbSingleton.exec(stmt);
   }
 
-  /** Ancienne rubrique « projets-ppp-investissement » (page supprimée) → mêmes annonces qu’appels d’offres */
-  try {
-    dbSingleton
-      .prepare(
-        `UPDATE opportunity_posts SET category = 'opportunites' WHERE category = 'projets-ppp-investissement'`
-      )
-      .run();
-  } catch {
-    /* ignore */
-  }
-
-  const oppPostCols = dbSingleton.prepare(`PRAGMA table_info(opportunity_posts)`).all();
-  if (!oppPostCols.some((c) => c.name === "image_url")) {
-    dbSingleton.exec(`ALTER TABLE opportunity_posts ADD COLUMN image_url TEXT`);
-  }
-  if (!oppPostCols.some((c) => c.name === "attachments_json")) {
-    dbSingleton.exec(`ALTER TABLE opportunity_posts ADD COLUMN attachments_json TEXT`);
-  }
-  if (!oppPostCols.some((c) => c.name === "consultation_deadline")) {
-    dbSingleton.exec(`ALTER TABLE opportunity_posts ADD COLUMN consultation_deadline TEXT`);
-  }
-  const hadOrganismeCol = oppPostCols.some((c) => c.name === "organisme");
-  const hadLieuCol = oppPostCols.some((c) => c.name === "lieu");
-  if (!hadOrganismeCol) {
-    dbSingleton.exec(`ALTER TABLE opportunity_posts ADD COLUMN organisme TEXT`);
-  }
-  if (!hadLieuCol) {
-    dbSingleton.exec(`ALTER TABLE opportunity_posts ADD COLUMN lieu TEXT`);
-  }
-  if (!hadOrganismeCol || !hadLieuCol) {
-    dbSingleton
-      .prepare(
-        `UPDATE opportunity_posts
-         SET organisme = COALESCE(NULLIF(TRIM(organisme), ''), 'Non précisé'),
-             lieu = COALESCE(NULLIF(TRIM(lieu), ''), 'Non précisé')
-         WHERE category IN ('opportunites', 'appels-offres')`
-      )
-      .run();
-  }
+  /** Anciennes rubriques (données importées d'une base SQLite) → segment /opportunites */
+  await dbSingleton
+    .prepare(
+      `UPDATE opportunity_posts SET category = 'opportunites'
+       WHERE category IN ('appels-offres', 'projets-ppp-investissement')`
+    )
+    .run();
 
   /** Ordre aligné sur src/data/services.ts — INSERT OR IGNORE pour les bases existantes */
   const servicePublicationSlugs = [
-    "marches-publics",
-    "projets",
-    "financements-subventions",
-    "gouvernance-structuration",
-    "optimisation-fiscale",
-    "audit-conformite",
-    "contentieux-publics",
-    "formation-recherche",
+    "conformite",
+    "commande-publique",
+    "ingenierie-projets",
+    "formation-sensibilisation-recherche",
   ];
   const nowSp = new Date().toISOString();
+  const existingSp = await dbSingleton.prepare(`SELECT slug FROM service_publications`).all();
+  for (const row of existingSp) {
+    if (!servicePublicationSlugs.includes(row.slug)) {
+      await dbSingleton.prepare(`DELETE FROM service_publications WHERE slug = ?`).run(row.slug);
+    }
+  }
   const insertSp = dbSingleton.prepare(
     `INSERT OR IGNORE INTO service_publications (slug, published, sort_order, updated_at) VALUES (?, 1, ?, ?)`
   );
   for (let i = 0; i < servicePublicationSlugs.length; i++) {
-    insertSp.run(servicePublicationSlugs[i], i, nowSp);
+    await insertSp.run(servicePublicationSlugs[i], i, nowSp);
   }
 
-  const count = dbSingleton.prepare("SELECT COUNT(*) AS c FROM realisations").get().c;
+  const count = Number((await dbSingleton.prepare("SELECT COUNT(*) AS c FROM realisations").get()).c);
   if (count === 0) {
     const now = new Date().toISOString();
     const seed = [
@@ -225,16 +150,16 @@ export function initDb() {
 
     const insert = dbSingleton.prepare(
       `INSERT INTO realisations (title, description, category, image, published, sort_order, created_at, updated_at)
-       VALUES (@title, @description, @category, @image, 1, @sort_order, @created_at, @updated_at)`
+       VALUES (?, ?, ?, ?, 1, ?, ?, ?)`
     );
     for (const row of seed) {
-      insert.run({ ...row, created_at: now, updated_at: now });
+      await insert.run(row.title, row.description, row.category, row.image, row.sort_order, now, now);
     }
   }
 
   /** Modèles types d’appel d’offres (page Appels d’offres) — insertion unique si absent. */
   const seedAoMarkerTitle = "Modèle — Appel d'offres ouvert (travaux)";
-  const aoAlready = dbSingleton
+  const aoAlready = await dbSingleton
     .prepare(
       `SELECT 1 FROM opportunity_posts
        WHERE category IN ('opportunites', 'appels-offres') AND title = ? LIMIT 1`
@@ -447,7 +372,7 @@ Vérifier les seuils et la procédure adaptée au regard du code des marchés pu
     );
     for (let i = 0; i < aoModels.length; i++) {
       const m = aoModels[i];
-      insertAo.run(
+      await insertAo.run(
         "opportunites",
         m.title,
         m.summary,
@@ -480,13 +405,14 @@ Vérifier les seuils et la procédure adaptée au regard du code des marchés pu
    * @param {string} markerTitle
    * @param {{ title: string; summary: string; body: string; organisme: string; lieu: string; consultation_deadline: string | null }[]} rows
    */
-  function seedOpportunityDemoCategory(category, markerTitle, rows) {
-    const exists = dbSingleton
+  async function seedOpportunityDemoCategory(category, markerTitle, rows) {
+    const exists = await dbSingleton
       .prepare(`SELECT 1 FROM opportunity_posts WHERE category = ? AND title = ? LIMIT 1`)
       .get(category, markerTitle);
     if (exists) return;
-    rows.forEach((r, i) => {
-      insertOppDemo.run(
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+      await insertOppDemo.run(
         category,
         r.title,
         r.summary,
@@ -500,10 +426,10 @@ Vérifier les seuils et la procédure adaptée au regard du code des marchés pu
         nowDemo,
         nowDemo
       );
-    });
+    }
   }
 
-  seedOpportunityDemoCategory("appels-a-projets", "Démo — AMI infrastructures hydrauliques locales", [
+  await seedOpportunityDemoCategory("appels-a-projets", "Démo — AMI infrastructures hydrauliques locales", [
     {
       title: "Démo — AMI infrastructures hydrauliques locales",
       summary:
@@ -555,7 +481,7 @@ NOTE
     },
   ]);
 
-  seedOpportunityDemoCategory("financements-subventions", "Démo — Subvention PME agricoles", [
+  await seedOpportunityDemoCategory("financements-subventions", "Démo — Subvention PME agricoles", [
     {
       title: "Démo — Subvention PME agricoles",
       summary: "Aide à l'investissement matériel et à la certification (exemple fictif).",
@@ -594,7 +520,7 @@ Gouvernance locale, MRV, partage des bénéfices.`,
     },
   ]);
 
-  seedOpportunityDemoCategory("opportunites", "Démo — PPP autoroute urbaine et péages", [
+  await seedOpportunityDemoCategory("opportunites", "Démo — PPP autoroute urbaine et péages", [
     {
       title: "Démo — PPP autoroute urbaine et péages",
       summary: "Structuration DBFOM, partage de trafic et risques trafic/revenus (fictif).",
@@ -633,7 +559,7 @@ Baux emphytéotiques, fiscalité dégressive, services one-stop-shop.`,
     },
   ]);
 
-  seedOpportunityDemoCategory("alertes-personnalisees", "Démo — Alerte BTP & travaux lourds", [
+  await seedOpportunityDemoCategory("alertes-personnalisees", "Démo — Alerte BTP & travaux lourds", [
     {
       title: "Démo — Alerte BTP & travaux lourds",
       summary: "Veille fictive : marchés > 500 kUSD, provinces ciblées, mots-clés « routes, ponts ».",
@@ -673,7 +599,7 @@ Entrée purement technique de démonstration.`,
   ]);
 
   /** Vingt appels d’offres fictifs (rubrique Opportunités / marchés) — une fois si absents. */
-  seedOpportunityDemoCategory("opportunites", "Démo — Travaux voirie et assainissement Tshangu (fictif)", [
+  await seedOpportunityDemoCategory("opportunites", "Démo — Travaux voirie et assainissement Tshangu (fictif)", [
     {
       title: "Démo — Travaux voirie et assainissement Tshangu (fictif)",
       summary:
