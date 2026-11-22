@@ -29,14 +29,14 @@ export function PublicationsActualites() {
   return (
     <>
       <SEO
-        title="Actualités — Publications"
-        description="Analyses, veille et retours d’expérience ORBIS PUBLICA sur la commande publique, les financements et le développement."
+        title="Actualités & Analyses — Publications"
+        description="Notes de veille, décryptages juridiques et réglementaires, analyses institutionnelles et articles de fond issus de la pratique professionnelle et des réalités du terrain."
       />
       <PageHeroBanner className="py-20">
         <div className="container mx-auto px-6 md:px-10">
-          <h1 className="text-4xl font-bold md:text-5xl">Actualités</h1>
+          <h1 className="text-4xl font-bold md:text-5xl">Actualités &amp; Analyses</h1>
           <p className="mt-6 max-w-3xl text-xl text-slate-300">
-            Notes de veille, décryptages réglementaires et articles de fond issus de notre pratique terrain.
+            Notes de veille, décryptages juridiques et réglementaires, analyses institutionnelles et articles de fond issus de la pratique professionnelle et des réalités du terrain.
           </p>
         </div>
       </PageHeroBanner>

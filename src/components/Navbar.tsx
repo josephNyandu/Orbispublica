@@ -92,7 +92,7 @@ export function Navbar() {
 
   /** Liens du menu façon ANAPI : Roboto, bleu institutionnel, bleu ciel au survol et pour la page active. */
   const desktopNavLinkBase =
-    'whitespace-nowrap py-3 font-[family-name:var(--font-alt)] text-[15px] font-medium transition-colors duration-200 hover:text-blue-500';
+    'whitespace-nowrap py-3 font-[family-name:var(--font-alt)] text-[17px] font-medium transition-colors duration-200 hover:text-blue-500';
 
   return (
     <nav
