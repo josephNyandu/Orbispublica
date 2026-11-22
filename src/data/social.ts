@@ -7,4 +7,4 @@ export const X_PROFILE_URL = 'https://x.com/orbispublica?s=21';
  * Présence LinkedIn — remplacer par l'URL de page Entreprise si vous en publiez une.
  * (Profil public vérifié : fondateur d'ORBIS PUBLICA.)
  */
-export const LINKEDIN_PAGE_URL = 'https://www.linkedin.com/in/augustin-musole-63027a130';
+export const LINKEDIN_PAGE_URL = 'https://www.linkedin.com/in/orbis-publica-b85222406/';

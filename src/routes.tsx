@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router";
 import AppLayout from "./AppLayout";
 import { Home } from "./pages/Home";
 import CabinetLayout from "./layouts/CabinetLayout";
-import { CabinetAPropos } from "./pages/cabinet/CabinetAPropos";
 import { CabinetQuiSommesNous } from "./pages/cabinet/CabinetQuiSommesNous";
 import { CabinetVisionMission } from "./pages/cabinet/CabinetVisionMission";
 import { CabinetPartenaires } from "./pages/cabinet/CabinetPartenaires";
@@ -137,8 +136,8 @@ export const router = createBrowserRouter([
         path: "notre-cabinet",
         Component: CabinetLayout,
         children: [
-          { index: true, element: <Navigate to="a-propos" replace /> },
-          { path: "a-propos", Component: CabinetAPropos },
+          { index: true, element: <Navigate to="qui-sommes-nous" replace /> },
+          { path: "a-propos", element: <Navigate to="/notre-cabinet/qui-sommes-nous" replace /> },
           { path: "qui-sommes-nous", Component: CabinetQuiSommesNous },
           { path: "vision-mission", Component: CabinetVisionMission },
           { path: "partenaires", Component: CabinetPartenaires },

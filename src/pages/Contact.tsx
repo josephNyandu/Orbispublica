@@ -62,8 +62,8 @@ export function Contact() {
         <div className="container mx-auto px-6 md:px-10">
           <h1 className="text-3xl md:text-5xl font-bold mb-6">Contactez-nous</h1>
           <p className="text-xl text-slate-300 max-w-3xl">
-            Vous souhaitez soumettre un projet, solliciter un accompagnement ou obtenir des informations ? 
-            Nous sommes à votre disposition.
+            Vous souhaitez bénéficier de notre expertise, obtenir des informations ou envisager une collaboration ?
+            ORBIS PUBLICA est à votre écoute.
           </p>
         </div>
       </PageHeroBanner>

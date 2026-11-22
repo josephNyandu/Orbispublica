@@ -10,6 +10,7 @@ import logoBanqueMondiale from '../assets/partners/banque-mondiale.svg';
 import logoUnionEuropeenne from '../assets/partners/union-europeenne.svg';
 import logoBad from '../assets/partners/bad.svg';
 import logoRdc from '../assets/partners/rdc-armoiries.svg';
+import logoRawbank from '../assets/partners/rawbank.png';
 import { useState, useEffect, useRef } from 'react';
 import { CountUp, Marquee, ParallaxImage, Reveal, Stagger, StaggerItem, TiltCard, WordsReveal, EASE } from '@/components/motion/Motion';
 import { useServicePublications } from '@/hooks/useServicePublications';
@@ -21,7 +22,7 @@ const partners: { name: string; logo?: string }[] = [
   { name: 'Union Européenne', logo: logoUnionEuropeenne },
   { name: 'BAD', logo: logoBad },
   { name: 'Gouvernement RDC', logo: logoRdc },
-  { name: 'Entreprises Privées' },
+  { name: 'Rawbank', logo: logoRawbank },
 ];
 
 const SLIDE_MS = 6500;
@@ -204,7 +205,7 @@ export function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.9, delay: 0.5, ease: EASE }}
               >
-                <p className="m-0 text-sm font-bold text-blue-300">Projets accompagnés</p>
+                <p className="m-0 text-sm font-bold text-blue-300">Projets et partenaires accompagnés</p>
                 <p className="m-0 font-[family-name:var(--font-head)] text-5xl font-bold">
                   <CountUp to={50} prefix="+" />
                 </p>
